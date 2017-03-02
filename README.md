@@ -28,14 +28,9 @@ var _**save**_ (Bool) => If set to false, the result will not be saved but will 
 
 var _**sql_unique**_ (Bool) => If set to true the SQL dump is a single file with all the tables. (Valid only for the SQL format)
 
-### _con()_
+### _con($HOST,$USER,$PASSWD,$NAME,$PORT=null,$SOCK=null)_
 
 This Function is an simple Mysql connection (new mysqli()) 
-
-``` php
-$backup = new SQL_Backup();
-$backup->con($HOST,$USER,$PASSWD,$NAME,$PORT=null,$SOCK=null);
-```
 
 EXAMPLE:
 
@@ -178,9 +173,9 @@ $backup->ext = array(13,26);
 $backup->ext = "39";
 ```
 
-> **Same for JSON and CSV or JSON and SQL**
+ **Same for JSON and CSV or JSON and SQL**
 
-> _For all three formats use ($n > 100)_
+ _For all three formats use ($n > 100)_
 
 
 
