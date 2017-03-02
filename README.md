@@ -3,6 +3,10 @@ Dump MySQL with PHP.
 
 > ## **CLASS**
 
+``` php
+$backup = new SQL_Backup();
+```
+
 ___**construct**_(_$con, $tablename, $folder, $querylimit, $compress, $ext, $alltableinfile, $save, $sqlunique_)
 
 var _**con**_ (Object) => MySQLi connection already opened.
@@ -33,7 +37,27 @@ This Function is an simple Mysql connection (new mysqli())
 
 EXAMPLE:
 
-$test1->con($HOST,$USER,$PASSWD,$NAME,$PORT=null,$SOCK=null);
+``` php
+$HOST = 'localhost';
+$USER = 'root';
+$PASSWD = '';
+$NAME = 'francesco';
+```
+
+Case : Connection already open...
+
+``` php
+$con = new mysqli($HOST,$USER,$PASSWD,$NAME);
+$backup = new SQL_Backup($con);
+```
+
+Case : Connection closed....
+
+``` php
+$backup = new SQL_Backup();
+$backup->con($HOST,$USER,$PASSWD,$NAME);
+```
+
 
 
 ### $ _table_name_
@@ -47,11 +71,13 @@ EXAMPLE:
 String: 
 
 ``` php
-$table = "users,alldata";
+$backup->table_name = "users,alldata";
 ```
+
 Array:
+
 ``` php
-$table = array('users','alldata');
+$backup->table_name = array('users','alldata');
 ```
 
 
