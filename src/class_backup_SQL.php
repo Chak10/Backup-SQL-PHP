@@ -22,7 +22,7 @@ class SQL_Backup {
     const CSV = 26;
     const JSON = 49;
     
-   function __construct($con = null, $table_name = null, $folder = null, $query_limit = null, $compress = null, $ext = null, $alltable_in_file = null, $save = null, $sql_unique = null) {
+    function __construct($con = null, $table_name = null, $folder = null, $query_limit = null, $compress = null, $ext = null, $alltable_in_file = null, $save = null, $sql_unique = null) {
         $this->con = $con;
         $this->table_name = $table_name;
         $this->folder = $folder;
@@ -35,7 +35,7 @@ class SQL_Backup {
     }
     
     function con($HOST, $USER, $PASSWD, $NAME, $PORT = null, $SOCK = null) {
-        $con = new mysqli ($HOST, $USER, $PASSWD, $NAME, $PORT != null ? $PORT : ini_get("mysqli.default_port"), $SOCK != null ? $SOCK : ini_get("mysqli.default_socket"));
+        $con = new mysqli($HOST, $USER, $PASSWD, $NAME, $PORT != null ? $PORT : ini_get("mysqli.default_port"), $SOCK != null ? $SOCK : ini_get("mysqli.default_socket"));
         $this->con = $con;
     }
     
@@ -95,12 +95,12 @@ class SQL_Backup {
         }
     }
     
-	function __destruct(){
-		$con = $this->con;
-		$this->checkcon($con);
-		$this->res != null && $this->res == true ? $con->close() : '' ;
-	}
-	
+    function __destruct() {
+        $con = $this->con;
+        $this->checkcon($con);
+        $this->res != null && $this->res == true ? $con->close() : '';
+    }
+    
     private function json_exec($con, $tables) {
         if ($this->compress == true) {
             $result = $this->json($con, $tables);
