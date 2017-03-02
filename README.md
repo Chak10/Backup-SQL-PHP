@@ -120,7 +120,6 @@ const JSON = 49;
 ``` php
 $backup->ext = $backup::SQL;
 ```
-	or
 
 ``` php
 $backup->ext = 13;
@@ -130,7 +129,6 @@ $backup->ext = 13;
 ``` php
 $backup->ext = $backup::CSV;
 ```
-	or
 
 ``` php
 $backup->ext = 26;
@@ -140,7 +138,6 @@ $backup->ext = 26;
 ``` php
 $backup->ext = $backup::JSON;
 ```
-	or
 
 ``` php
 $backup->ext = 49;
@@ -153,23 +150,18 @@ SQL + CSV
 ``` php
 $backup->ext = $backup::SQL + $backup::CSV;
 ```
-	or
 
 ``` php
 $backup->ext = 13 + 26; // 39 
 ```
-	or
 
 ``` php
 $backup->ext = array($backup::SQL, $backup::CSV);
 ```
-	or
 
 ``` php
 $backup->ext = array(13,26);
 ```
-
-	or
 
 ``` php
 $backup->ext = "39";
@@ -178,6 +170,8 @@ $backup->ext = "39";
 > **Same for JSON and CSV or JSON and SQL**
 
 > _For all three formats use ($n > 100)_
+
+
 
 ### $_alltable_in_file_ (_Bool_)
 
@@ -190,6 +184,7 @@ If set to TRUE:
 ``` php
 $backup->alltable_in_file = true;
 ```
+
 
 ### $_save_ (_Bool_) 
 
