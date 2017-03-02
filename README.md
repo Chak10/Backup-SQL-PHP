@@ -11,7 +11,7 @@ ___**construct**_(_$con, $tablename, $folder, $querylimit, $compress, $ext, $all
 
 var _**con**_ (Object) => MySQLi connection already opened.
 
-var _**table_name**_ (String or Array) => The tables that you want to backup. (READ TABLE SECTION)
+var _**table_name**_ (String or Array) => The tables that you want to backup. [READ TABLE SECTION](https://github.com/Chak10/Backup-SQL-By-Chak10#-table_name)
 
 var _**folder**_ (String) => The folder where the files will be saved 
 
