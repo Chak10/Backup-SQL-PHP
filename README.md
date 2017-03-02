@@ -88,8 +88,8 @@ Number of queries at a time to execute in SQL.
 
 Exemple q_limit = 400
 
-> INSERT INTO table ( '' ,'' ,'') VALUES ('' ,'' ,'') ,('' ,'' ,'') ,('' ,'' ,'') ...... * 400 ,('' ,'' ,'');
-INSERT INTO table ( '' ,'' ,'') VALUES ('' ,'' ,'') ,('' ,'' ,'') ,('' ,'' ,'') ...... * 400 ,('' ,'' ,'');
+>INSERT INTO table ( '' ,'' ,'') VALUES ('' ,'' ,'') ,('' ,'' ,'') ,('' ,'' ,'') ...... * 400 ,('' ,'' ,'');
+>INSERT INTO table ( '' ,'' ,'') VALUES ('' ,'' ,'') ,('' ,'' ,'') ,('' ,'' ,'') ...... * 400 ,('' ,'' ,'');
 .....
 etc.
 
@@ -114,7 +114,7 @@ const SQL = 13;
 const CSV = 26;
 const JSON = 49;
 ```
--SQL extension
+- SQL extension
 
 
 ``` php
@@ -125,7 +125,7 @@ or
 ``` php
 $backup->ext = 13;
 ```
--CSV extension
+- CSV extension
 
 ``` php
 $backup->ext = $backup::CSV;
@@ -135,7 +135,7 @@ or
 ``` php
 $backup->ext = 26;
 ```
--JSON extension
+- JSON extension
 
 ``` php
 $backup->ext = $backup::JSON;
