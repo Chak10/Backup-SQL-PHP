@@ -1,7 +1,7 @@
 # **Backup-SQL-By-Chak10**
 Dump MySQL with PHP.
 
-> **CLASS**
+> ## **CLASS**
 
 ___**construct**_(_$con, $tablename, $folder, $querylimit, $compress, $ext, $alltableinfile, $save, $sqlunique_)
 
