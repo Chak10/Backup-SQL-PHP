@@ -34,3 +34,30 @@ This Function is an simple Mysql connection (new mysqli())
 EXAMPLE:
 
 $test1->con($HOST,$USER,$PASSWD,$NAME,$PORT=null,$SOCK=null);
+
+
+### $ _table_name_
+
+String or Array   
+
+The tables that you want to backup.
+
+EXAMPLE:
+
+String: 
+
+``` php
+$table = "users,alldata";
+```
+Array:
+``` php
+$table = array('users','alldata');
+```
+
+
+
+
+
+
+
+
