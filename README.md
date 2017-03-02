@@ -90,8 +90,8 @@ Exemple q_limit = 400
 
 >INSERT INTO table ( '' ,'' ,'') VALUES ('' ,'' ,'') ,('' ,'' ,'') ,('' ,'' ,'') ...... * 400 ,('' ,'' ,'');
 >INSERT INTO table ( '' ,'' ,'') VALUES ('' ,'' ,'') ,('' ,'' ,'') ,('' ,'' ,'') ...... * 400 ,('' ,'' ,'');
-.....
-etc.
+..... etc.
+
 
 ``` php
 $backup->qlimit=400;
@@ -146,9 +146,38 @@ or
 $backup->ext = 49;
 ```
 
+#### Combinations
 
+SQL + CSV 
 
+``` php
+$backup->ext = $backup::SQL + $backup::CSV;
+```
+or
 
+``` php
+$backup->ext = 13 + 26; // 39 
+```
+or
+
+``` php
+$backup->ext = array($backup::SQL, $backup::CSV);
+```
+or
+
+``` php
+$backup->ext = array(13,26);
+```
+
+or
+
+``` php
+$backup->ext = "39";
+```
+
+Same for JSON and CSV o JSON and SQL
+
+For all three formats use x>100
 
 
 
