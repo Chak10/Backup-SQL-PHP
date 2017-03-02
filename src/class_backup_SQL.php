@@ -382,6 +382,7 @@ class SQL_Backup {
                 $this->err = -17;
                 return false;
             }
+			!is_dir($this->folder."/".$extens.'/'.$name_new) ? $res = mkdir($this->folder."/".$extens.'/'.$name_new,0764,true) : '';
             file_put_contents($this->folder . "/" . $extens . '/' . $name_new . '/' . $table . '_' . time() . '-' . md5($table . time()) . '.' . $extens, $res) === false ? $this->res = false : $this->res = true;
         } else {
             file_put_contents($this->folder . "/" . $extens . '/' . $table . '_' . time() . '-' . md5($table . time()) . '.' . $extens, $res) === false ? $this->res = false : $this->res = true;
