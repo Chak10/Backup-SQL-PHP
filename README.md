@@ -1,6 +1,6 @@
 # **Backup-SQL-By-Chak10**
 
-Dump MySQL with PHP.
+BACKUP TABLE OR DATABASE MySQL with PHP.
 
 ``` php
 $backup = new SQL_Backup();
@@ -10,7 +10,7 @@ ___**construct**_(_$con, $tablename, $folder, $querylimit, $compress, $ext, $all
 
 var _**con**_ (Object) => MySQLi connection already opened.
 
-var _**table_name**_ (String or Array) => The tables that you want to backup. [READ TABLE SECTION](https://github.com/Chak10/Backup-SQL-By-Chak10#-table_name)
+var _**table_name**_ (String or Array) => The tables that you want to backup. [READ TABLE SECTION](#table_name)
 
 var _**folder**_ (String) => The folder where the files will be saved 
 
@@ -28,9 +28,14 @@ var _**save**_ (Bool) => If set to false, the result will not be saved but will 
 
 var _**sql_unique**_ (Bool) => If set to true the SQL dump is a single file with all the tables. (Valid only for the SQL format)
 
-### $ _con_ (_Object_)
+### _con()_
 
 This Function is an simple Mysql connection (new mysqli()) 
+
+``` php
+$backup = new SQL_Backup();
+$backup->con($HOST,$USER,$PASSWD,$NAME,$PORT=null,$SOCK=null);
+```
 
 EXAMPLE:
 
@@ -54,6 +59,12 @@ Case : Connection closed....
 $backup = new SQL_Backup();
 $backup->con($HOST,$USER,$PASSWD,$NAME);
 ```
+
+### _execute(NULL)_
+
+Run Command
+
+**Is critical . To run every time at the end!**
 
 
 ### $ _table_name_ (_String or Array_)   
@@ -201,6 +212,12 @@ object(SQL_Backup)[1]
     array (size=1)    
       'name_table' => string '...'
       
+ 
+### $_sql_unique_ (_Bool_) 
+
+If set to true the SQL dump is a single file with all the tables. (Valid only for the SQL format)
+
+> Table 1 SQL + Table 2 SQL + ETC. 
       
       
 
