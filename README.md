@@ -29,7 +29,7 @@ var _**save**_ (Bool) => If set to false, the result will not be saved but will 
 
 var _**sql_unique**_ (Bool) => If set to true the SQL dump is a single file with all the tables. (Valid only for the SQL format)
 
-### $ _con_
+### $ _con_ (_Object_)
 
 This Function is an simple Mysql connection (new mysqli()) 
 
@@ -58,9 +58,7 @@ $backup->con($HOST,$USER,$PASSWD,$NAME);
 
 
 
-### $ _table_name_
-
-String or Array   
+### $ _table_name_ (_String or Array_)   
 
 The tables that you want to backup.
 
@@ -76,6 +74,12 @@ Array:
 
 ``` php
 $backup->table_name = array('users','alldata');
+```
+
+### $_folder_ (_String_)
+
+``` php
+$backup->folder = "backup/database"; /* ONLY DIR */
 ```
 
 
