@@ -89,16 +89,61 @@ Number of queries at a time to execute in SQL.
 Exemple q_limit = 400
 
 > INSERT INTO `table` ( `` ,`` ,``) VALUES ('' ,'' ,'') ,('' ,'' ,'') ,('' ,'' ,'') ...... * 400 ,('' ,'' ,'');
-INSERT INTO `table` ( `` ,`` ,``) VALUES ('' ,'' ,'') ,('' ,'' ,'') ,('' ,'' ,'') ...... * 400 ,('' ,'' ,'');
+> INSERT INTO `table` ( `` ,`` ,``) VALUES ('' ,'' ,'') ,('' ,'' ,'') ,('' ,'' ,'') ...... * 400 ,('' ,'' ,'');
 .....
 etc.
-
 
 ``` php
 $backup->qlimit=400;
 ```
 
+### $_compress_ (_Bool_)
 
+If set to true the result is compressed. (.zip)
+
+``` php
+$backup->compress = true;
+```
+
+### $_ext_ (_Int_)
+
+The extension of the destination file.
+
+``` php
+const SQL = 13;
+const CSV = 26;
+const JSON = 49;
+```
+1. SQL extension
+
+``` php
+$backup->ext = $backup::SQL;
+```
+or
+
+``` php
+$backup->ext = 13;
+```
+2. CSV extension
+
+``` php
+$backup->ext = $backup::CSV;
+```
+or
+
+``` php
+$backup->ext = 26;
+```
+3. JSON extension
+
+``` php
+$backup->ext = $backup::JSON;
+```
+or
+
+``` php
+$backup->ext = 49;
+```
 
 
 
