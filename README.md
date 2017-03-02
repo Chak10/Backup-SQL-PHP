@@ -233,5 +233,5 @@ If set to true the SQL dump is a single file with all the tables. (Valid only fo
 - Alltable_in_file = false
 - Save = true
 - Sql_unique = false
-- Del=','
-- Enc='"'
+- Del= ,
+- Enc= "
