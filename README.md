@@ -3,7 +3,7 @@ Dump MySQL with PHP.
 
 # =>CLASS<=
 
-  SQL_Backup::__construct($con = null,$table_name =null,$folder = null,$query_limit=null,$compress = null,$ext=null,$alltable_in_file=null,$save =null,$sql_unique=null)
+__construct($con = null,$table_name =null,$folder = null,$query_limit=null,$compress = null,$ext=null,$alltable_in_file=null,$save =null,$sql_unique=null)
 
 $con (Object) => MySQLi connection already opened.
 
