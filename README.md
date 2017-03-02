@@ -195,10 +195,12 @@ EXAMPLE
 SQL:
 
 object(SQL_Backup)[1]
-  ...
-  public 'sql' => 
-    array (size=1)
+
+  ...  
+  public 'sql' =>
+    array (size=1)    
       'name_table' => string '...'
+      
       
       
 
