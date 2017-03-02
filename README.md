@@ -226,12 +226,12 @@ If set to true the SQL dump is a single file with all the tables. (Valid only fo
 
 ## DEFAULT SETTING
 
--Folder = "backup/database";
--Query Limit = 400
--Compress = true
--Extension = SQL
--Alltable_in_file = false
--Save = true
--Sql_unique = false
--Del=','
--Enc='"'
+- Folder = "backup/database";
+- Query Limit = 400
+- Compress = true
+- Extension = SQL
+- Alltable_in_file = false
+- Save = true
+- Sql_unique = false
+- Del=','
+- Enc='"'
