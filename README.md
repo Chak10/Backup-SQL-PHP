@@ -31,8 +31,6 @@ var _**sql_unique**_ (Bool) => If set to true the SQL dump is a single file with
 
 ### $ _con_
 
-> If you have an already open connection enter it at the opening of the class (Read Readme)
-
 This Function is an simple Mysql connection (new mysqli()) 
 
 EXAMPLE:
