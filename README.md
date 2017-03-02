@@ -1,7 +1,6 @@
 # **Backup-SQL-By-Chak10**
-Dump MySQL with PHP.
 
-> ## **CLASS**
+Dump MySQL with PHP.
 
 ``` php
 $backup = new SQL_Backup();
@@ -57,7 +56,6 @@ $backup->con($HOST,$USER,$PASSWD,$NAME);
 ```
 
 
-
 ### $ _table_name_ (_String or Array_)   
 
 The tables that you want to backup.
@@ -76,11 +74,30 @@ Array:
 $backup->table_name = array('users','alldata');
 ```
 
+
 ### $_folder_ (_String_)
 
 ``` php
 $backup->folder = "backup/database"; /* ONLY DIR */
 ```
+
+
+### $_query_limit_ (_Int_)
+
+Number of queries at a time to execute in SQL.
+
+Exemple q_limit = 400
+
+> INSERT INTO `table` ( `` ,`` ,``) VALUES ('' ,'' ,'') ,('' ,'' ,'') ,('' ,'' ,'') ...... * 400 ,('' ,'' ,'');
+INSERT INTO `table` ( `` ,`` ,``) VALUES ('' ,'' ,'') ,('' ,'' ,'') ,('' ,'' ,'') ...... * 400 ,('' ,'' ,'');
+.....
+etc.
+
+
+``` php
+$backup->qlimit=400;
+```
+
 
 
 
