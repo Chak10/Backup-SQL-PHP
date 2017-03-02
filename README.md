@@ -120,7 +120,7 @@ const JSON = 49;
 ``` php
 $backup->ext = $backup::SQL;
 ```
-or
+	or
 
 ``` php
 $backup->ext = 13;
@@ -130,7 +130,7 @@ $backup->ext = 13;
 ``` php
 $backup->ext = $backup::CSV;
 ```
-or
+	or
 
 ``` php
 $backup->ext = 26;
@@ -140,7 +140,7 @@ $backup->ext = 26;
 ``` php
 $backup->ext = $backup::JSON;
 ```
-or
+	or
 
 ``` php
 $backup->ext = 49;
@@ -153,31 +153,60 @@ SQL + CSV
 ``` php
 $backup->ext = $backup::SQL + $backup::CSV;
 ```
-or
+	or
 
 ``` php
 $backup->ext = 13 + 26; // 39 
 ```
-or
+	or
 
 ``` php
 $backup->ext = array($backup::SQL, $backup::CSV);
 ```
-or
+	or
 
 ``` php
 $backup->ext = array(13,26);
 ```
 
-or
+	or
 
 ``` php
 $backup->ext = "39";
 ```
 
-Same for JSON and CSV o JSON and SQL
+> **Same for JSON and CSV or JSON and SQL**
 
-For all three formats use x>100
+> _For all three formats use ($n > 100)_
+
+### $_alltable_in_file_ (_Bool_)
+
+If set to TRUE: 
+
+- If the 'compress' variable is true all the files will be saved in a single zip file otherwise all will be saved individually.
+
+- If the 'compress' variable is false all the files will be saved into a single folder (Depending on the extension. Example Choose SQL extension dir/sql/name_file) or else each file will be saved individually.
+
+``` php
+$backup->alltable_in_file = true;
+```
+
+### $_save_ (_Bool_) 
+
+If set to FALSE, the result will not be saved but will be loaded on the variable of Class sql, csv, json (**ARRAY**)
+
+EXAMPLE
+
+SQL:
+
+>object(SQL_Backup)[1]
+  ...
+  public 'sql' => 
+    array (size=1)
+      'name_table' => string '...'
+      
+
+
 
 
 
