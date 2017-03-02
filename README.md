@@ -175,9 +175,18 @@ $backup->ext = "39";
 
  **Same for JSON and CSV or JSON and SQL**
 
- _For all three formats use ($n > 100)_
+ **_For all three formats use ($n > 100)_**
 
+> NOTE: If you use the CSV extension, if you want you can add the field delimiter and the enclosure of the camps.  
+By default they are:
+- Delimiter => ,
+- Enclosure => "
+Example: "Data","DATA2","datA3"
 
+``` php
+$backup->del_csv=";";
+$backup->enc_csv="'";
+```
 
 ### $_alltable_in_file_ (_Bool_)
 
@@ -212,11 +221,16 @@ object(SQL_Backup)[1]
 
 If set to true the SQL dump is a single file with all the tables. (Valid only for the SQL format)
 
-> Table 1 SQL + Table 2 SQL + ETC. 
-      
-      
+> Table 1 SQL + Table 2 SQL + ETC.
 
+## DEFAULT SETTING
 
-
-
-
+>Folder = "backup/database";
+Query Limit = 400
+Compress = true
+Extension = SQL
+Alltable_in_file = false
+Save = true
+Sql_unique = false
+Del=','
+Enc='"'
