@@ -181,7 +181,8 @@ $backup->ext = "39";
 By default they are:
 - Delimiter => ,
 - Enclosure => "
-Example: "Data","DATA2","datA3"
+
+>Example: "Data","DATA2","datA3"
 
 ``` php
 $backup->del_csv=";";
@@ -226,11 +227,11 @@ If set to true the SQL dump is a single file with all the tables. (Valid only fo
 ## DEFAULT SETTING
 
 >Folder = "backup/database";
-Query Limit = 400
-Compress = true
-Extension = SQL
-Alltable_in_file = false
-Save = true
-Sql_unique = false
-Del=','
-Enc='"'
+>Query Limit = 400
+>Compress = true
+>Extension = SQL
+>Alltable_in_file = false
+>Save = true
+>Sql_unique = false
+>Del=','
+>Enc='"'
