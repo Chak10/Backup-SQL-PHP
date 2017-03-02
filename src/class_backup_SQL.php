@@ -93,9 +93,14 @@ class SQL_Backup {
                     break;
             }
         }
-        
     }
     
+	function __destruct(){
+		$con = $this->con;
+		$this->checkcon($con);
+		$this->res != null && $this->res == true ? $con->close() : '' ;
+	}
+	
     private function json_exec($con, $tables) {
         if ($this->compress == true) {
             $result = $this->json($con, $tables);
