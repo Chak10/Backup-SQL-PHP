@@ -6,6 +6,9 @@ BACKUP TABLE OR DATABASE MySQL with PHP.
 $backup = new SQL_Backup();
 ```
 
+> Note: Attention this class has not been tested in all possible situations. So if you have problems you disclose them to me.
+> Note 2: I do not take responsibility in case of failure to backup or if the result you do not like or does not work
+
 ___**construct**_(_$con, $tablename, $folder, $querylimit, $compress, $ext, $alltableinfile, $save, $sqlunique_)
 
 var _**con**_ (Object) => MySQLi connection already opened.
