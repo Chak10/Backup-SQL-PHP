@@ -21,7 +21,7 @@
 
 ### Only Output (No Save)(x25)
 
-> X25 are executions
+> 25 executions
 
 
 1. SQL "Avg": 0.9852592182159424 <<<--- Time (float) [0.98s]
@@ -33,7 +33,7 @@
 
 ### Output in file (x10)
 
-> X10 are executions
+> 10 executions
 
 
 ```json
@@ -51,5 +51,3 @@
 ```
 
 > Note: PRETTY PRINT active not influence.
-
-
