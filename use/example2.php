@@ -7,11 +7,9 @@
 	DEFINE ('DB_NAME', 'francesco');
 	DEFINE ('DB_PASSWD', '');
 	
-	$time = -microtime(true);
+	$con = new mysqli(DB_HOST,DB_USER,DB_PASSWD,DB_NAME);
 	
-	$test1 = new SQL_Backup();
-	
-	$test1->con(DB_HOST,DB_USER,DB_PASSWD,DB_NAME);
+	$test1 = new SQL_Backup($con);
 	
 	$test1->table_name='alldata'; 
 	
@@ -25,9 +23,6 @@
 	
 	$test1->execute();
 	
-	$time += microtime(true);
-	
-	var_dump ($time);
 	var_dump ($test1);
 	
 ?>
