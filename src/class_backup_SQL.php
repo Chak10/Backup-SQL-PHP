@@ -17,7 +17,6 @@ class SQL_Backup {
     var $save;
     var $sql_unique;
     var $close;
-    var $drop_tb_sql;
     var $json_pretty;
     var $info_t;
     var $info = array();
@@ -321,7 +320,7 @@ class SQL_Backup {
             $return .= "-- Rows: $num_rows" . PHP_EOL;
             $return .= "--" . PHP_EOL;
             $return .= PHP_EOL;
-            $this->drop_tb_sql === true ? $return .= "DROP TABLE IF EXISTS " . $table . ";" . PHP_EOL : '';
+            $return .= "DROP TABLE IF EXISTS " . $table . ";" . PHP_EOL;
             $return .= $table_init[1] . ";" . PHP_EOL;
             $return .= PHP_EOL;
             $return .= PHP_EOL;
