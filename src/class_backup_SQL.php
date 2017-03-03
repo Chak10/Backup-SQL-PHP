@@ -1,5 +1,4 @@
-<?php
-	
+	<?php
 class SQL_Backup {
     
     private $version = "1.0.5";
@@ -126,7 +125,7 @@ class SQL_Backup {
     
     private function csv_exec($con, $tables, $del_c, $enc_c) {
         if (is_array($tables) === false)
-			return false;
+            return false;
         if ($this->compress == true) {
             $result = $this->csv($con, $tables, $del_c, $enc_c);
             $res_f = $this->joiner($result);
