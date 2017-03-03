@@ -339,7 +339,7 @@ class SQL_Backup {
 	
 	private function compress($str, $table, $extens, $recursive = false, $tab_name = null) {
 		!is_dir($this->folder . "/" . $extens) ? $res = mkdir($this->folder . "/" . $extens, 0764, true) : '';
-		!is_writable($this->folder . "/" . $extens) ? $res = mkdir($this->folder . "/" . $extens, 0764) : '';
+		!is_writable($this->folder . "/" . $extens) ? $res = chmod($this->folder . "/" . $extens, 0764) : '';
 		$zip = new ZipArchive;
 		if ($recursive) {
 			if ($tab_name == null) {
@@ -375,7 +375,7 @@ class SQL_Backup {
 	
 	private function nocompress($res, $table, $extens, $new_dir = false, $name_new = null) {
 		!is_dir($this->folder . "/" . $extens) ? $res = mkdir($this->folder . "/" . $extens, 0764, true) : '';
-		!is_writable($this->folder . "/" . $extens) ? $res = mkdir($this->folder . "/" . $extens, 0764) : '';
+		!is_writable($this->folder . "/" . $extens) ? $res = chmod($this->folder . "/" . $extens, 0764) : '';
 		if ($new_dir === true) {
 			if ($name_new == null) {
 				$this->res = false;
@@ -383,6 +383,7 @@ class SQL_Backup {
 				return false;
 			}
 			!is_dir($this->folder."/".$extens.'/'.$name_new) ? $res = mkdir($this->folder."/".$extens.'/'.$name_new,0764,true) : '';
+			!is_writable($this->folder."/".$extens.'/'.$name_new) ? $res = chmod($this->folder."/".$extens.'/'.$name_new,0764) : '';
 			file_put_contents($this->folder . "/" . $extens . '/' . $name_new . '/' . $table . '_' . time() . '-' . md5($table . time()) . '.' . $extens, $res) === false ? $this->res = false : $this->res = true;
 			} else {
 			file_put_contents($this->folder . "/" . $extens . '/' . $table . '_' . time() . '-' . md5($table . time()) . '.' . $extens, $res) === false ? $this->res = false : $this->res = true;
