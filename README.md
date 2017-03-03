@@ -224,6 +224,51 @@ If set to true the SQL dump is a single file with all the tables. (Valid only fo
 
 > Table 1 SQL + Table 2 SQL + ETC.
 
+## In V 1.0.5
+
+Added:
+
+### $_close_ (_Bool_)
+
+If set to true, at the end of operations the MySQL connection is closed otherwise the connection will be allowed in the class. 
+
+### $_json_pretty_ (_Bool_)
+
+If set to true, the output of the json will be like this:
+
+``` json
+{
+    "Info": {
+        "alldata": {
+            "R": 35954,
+            "C": 14
+        }
+    },
+    "Avg": 0.5024807643890381
+}
+```
+Otherwise:
+
+``` json
+{"Info":{"alldata":{"R":35954,"C":14}},"Avg":0.5024807643890381}
+```
+
+### $_info_t_ (_Bool_)
+
+If set to true, some information will be returned in the info array. (Look under)
+
+### $_info_  (_Array_)
+
+Here it will be returned any errors or information.
+
+MySQL Error, table columns and rows, etc.
+
+Example:
+
+``` json
+{"alldata":{"R":35954,"C":14}
+```
+
 ## DEFAULT SETTING
 
 - Folder = "backup/database";
@@ -233,8 +278,11 @@ If set to true the SQL dump is a single file with all the tables. (Valid only fo
 - Alltable_in_file = false
 - Save = true
 - Sql_unique = false
-- Del= ,
-- Enc= "
+- Del= [,]
+- Enc= ["]
+- Close = null
+- Info_t = null
+- Json_pretty = null
 
 > Note: Attention this class has not been tested in all possible situations. So if you have problems you disclose them to me.
 
