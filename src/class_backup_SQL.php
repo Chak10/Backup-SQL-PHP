@@ -3,7 +3,7 @@
 class SQL_Backup {
 	
 	private $version = "1.0.3";
-	private $site = "https://github.com/Chak10/Backup-SQL-By-Chak10.git";
+	private $site = "https://github.com/Chak10/Backup_SQL-PHP-ByChak10.git";
 	
 	var $con;
 	var $compress;
