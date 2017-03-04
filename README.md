@@ -28,9 +28,11 @@ var _**save**_ (Bool) => If set to false, the result will not be saved but will 
 
 var _**sql_unique**_ (Bool) => If set to true the SQL dump is a single file with all the tables. (Valid only for the SQL format)
 
+[**Execution Times**](https://github.com/Chak10/Backup_SQL-PHP-ByChak10/blob/master/benchmark/bench_time_exec.md)
+
 ### _con($HOST,$USER,$PASSWD,$NAME,$PORT=null,$SOCK=null)_
 
-This Function is an simple Mysql connection (new mysqli()) 
+This Function is an simple MySQL connection (new mysqli()) 
 
 EXAMPLE:
 
@@ -79,7 +81,7 @@ Array:
 ``` php
 $backup->table_name = array('users','alldata');
 ```
-
+> **If not set, it will back up all the databases**
 
 ### $_folder_ (_String_)
 
@@ -110,6 +112,8 @@ If set to true the result is compressed. (.zip)
 ``` php
 $backup->compress = true;
 ```
+
+[More info](https://github.com/Chak10/Backup_SQL-PHP-ByChak10/blob/master/benchmark/bench_size_exec.md)
 
 ### $_ext_ (_Int_)
 
@@ -284,6 +288,6 @@ Example:
 - Info_t = null
 - Json_pretty = null
 
-> Note: Attention this class has not been tested in all possible situations. So if you have problems you disclose them to me.
+> **Note: Attention this class has not been tested in all possible situations. So if you have problems you disclose them to me.**
 
-> Note 2: I do not take responsibility in case of failure to backup or if the result you do not like or does not work
+> **Note 2: I do not take responsibility in case of failure to backup or if the result you do not like or does not work**
