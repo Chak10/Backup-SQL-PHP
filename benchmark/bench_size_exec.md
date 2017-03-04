@@ -15,7 +15,6 @@
 - Rows: 35954
 - Columns: 14
 
-> Avg = average.
 
 ## Not Compressed
 
