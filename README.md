@@ -32,7 +32,7 @@ var _**sql_unique**_ (Bool) => If set to true the SQL dump is a single file with
 
 ### _con($HOST,$USER,$PASSWD,$NAME,$PORT=null,$SOCK=null)_
 
-This Function is an simple MySQLMysql connection (new mysqli()) 
+This Function is an simple MySQL connection (new mysqli()) 
 
 EXAMPLE:
 
@@ -533,6 +533,6 @@ Example:
 - Info_t = null
 - Json_pretty = null
 
-> Note: Attention this class has not been tested in all possible situations. So if you have problems you disclose them to me.
+> **Note: Attention this class has not been tested in all possible situations. So if you have problems you disclose them to me.**
 
-> Note 2: I do not take responsibility in case of failure to backup or if the result you do not like or does not work
+> **Note 2: I do not take responsibility in case of failure to backup or if the result you do not like or does not work**
