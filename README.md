@@ -81,7 +81,7 @@ Array:
 ``` php
 $backup->table_name = array('users','alldata');
 ```
-> **If not set, it will back up all the databases**
+**If not set, it will back up all the databases**
 
 ### $_folder_ (_String_)
 
