@@ -1,4 +1,4 @@
-	<?php
+<?php
 class SQL_Backup {
     
     private $version = "1.0.5";
@@ -532,4 +532,4 @@ class SQL_Backup {
     
 }
 
-?>	
+?>
