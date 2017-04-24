@@ -265,85 +265,46 @@ class SQL_Backup {
             $info == false ? $this->res = false && $this->err = -5 && $this->info["MySQL_Errno"] = $con->errno && $this->info["MySQL_Error"] = $con->error : '';
             if (!$this->res)
                 return false;
+			$nl = PHP_EOL;
             $info = $info->fetch_assoc();
-            $return = "-- Backup SQL By Chak10" . PHP_EOL;
-            $return .= "-- Version: " . ($this->version) . PHP_EOL;
-            $return .= "-- Github: " . ($this->site) . PHP_EOL;
-            $return .= "--" . PHP_EOL;
-            $return .= "--" . PHP_EOL;
-            $return .= "-- Server Version: " . ($con->server_info) . PHP_EOL;
-            $return .= "-- PHP Version: " . (PHP_VERSION) . PHP_EOL;
-            $return .= "-- Host Info: " . ($con->host_info) . PHP_EOL;
-            $return .= "-- Date: " . (date('Y-m-d H:i:s')) . PHP_EOL;
-            $return .= PHP_EOL;
-            $return .= PHP_EOL;
-            $return .= "SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";" . PHP_EOL;
-            $return .= "SET time_zone = \"+00:00\";" . PHP_EOL;
-            $return .= PHP_EOL;
-            $return .= PHP_EOL;
-            $return .= PHP_EOL;
-            $return .= "/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;" . PHP_EOL;
-            $return .= "/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;" . PHP_EOL;
-            $return .= "/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;" . PHP_EOL;
-            $return .= "/*!40101 SET NAMES utf8 */;" . PHP_EOL;
-            $return .= PHP_EOL;
-            $return .= PHP_EOL;
-            $charset = $con->get_charset();
-            $return .= "--" . PHP_EOL;
-            $return .= "-- Charset General: " . ($charset->charset) . PHP_EOL;
-            $return .= "-- Charset Table: " . ($info['Collation']) . PHP_EOL;
-            $return .= "--" . PHP_EOL;
-            $return .= PHP_EOL;
-            $return .= "-- ------------------------------------------" . PHP_EOL;
-            $return .= PHP_EOL;
-            $return .= "--" . PHP_EOL;
-            $return .= "-- Table Name: `" . ($table) . "`" . PHP_EOL;
+			$charset = $con->get_charset();
+            $return = "-- Backup SQL By Chak10" . $nl ."-- Version: " . ($this->version) . $nl ."-- Github: " . ($this->site) . $nl . "--" . $nl ."--" . $nl;
+            $return .= "-- Server Version: " . ($con->server_info) . $nl. "-- PHP Version: " . (PHP_VERSION) . $nl . "-- Host Info: " . ($con->host_info) . $nl;
+            $return .= "-- Date: " . (date('Y-m-d H:i:s')) . $nl . $nl. $nl;
+            $return .= "SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";" . $nl. "SET time_zone = \"+00:00\";" . $nl. $nl. $nl. $nl;
+            $return .= "/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;" . $nl. "/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;" . $nl. "/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;" . $nl. "/*!40101 SET NAMES utf8 */;" . $nl. $nl. $nl;
+             $return .= "--" . $nl. "-- Charset General: " . ($charset->charset) . $nl."-- Charset Table: " . ($info['Collation']) . $nl."--" . $nl. $nl;
+            $return .= "-- ------------------------------------------" . $nl. $nl."--" . $nl;
+            $return .= "-- Table Name: `" . ($table) . "`" . $nl;
             $res = $con->query("SHOW CREATE TABLE `" . $table . "`");
             $table_init = $res->fetch_row();
             $result = $con->query("SELECT * FROM `" . $table . "`");
             $num_fields = $result->field_count;
             $num_rows = $result->num_rows;
-            $x = 0;
-            $fields = array();
-            while ($field_info = $result->fetch_field()) {
-                $fields[$x] = $field_info->name;
-                $db = $field_info->db;
-                ++$x;
-            }
-            $return .= "-- Database: " . ($db) . PHP_EOL;
-            $return .= "--" . PHP_EOL;
+			$fields = '';
+			while ($field_info = $result->fetch_field()){
+				$fields .= "`".$field_info->name."`,";
+			}
+			$fields = substr($fields,0,-1);
+            $return .= "-- Database: " . ($db) . $nl. "--" . $nl;
             $this->info_t === true ? $this->info[$table] = array(
                 "R" => $num_rows,
                 "C" => $num_fields
             ) : '';
-            $return .= "-- Columns: $num_fields" . PHP_EOL;
-            $return .= "-- Rows: $num_rows" . PHP_EOL;
-            $return .= "--" . PHP_EOL;
-            $return .= PHP_EOL;
-            $return .= "DROP TABLE IF EXISTS " . $table . ";" . PHP_EOL;
-            $return .= $table_init[1] . ";" . PHP_EOL;
-            $return .= PHP_EOL;
-            $return .= PHP_EOL;
+			$db = $field_info->db;
+            $return .= "-- Columns: $num_fields" . $nl;
+            $return .= "-- Rows: $num_rows" . $nl. "--" . $nl.$nl;
+            $return .= "DROP TABLE IF EXISTS " . $table . ";" . $nl;
+            $return .= $table_init[1] . ";" . $nl.$nl.$nl;
             for ($i = 0, $s = 0; $i < $num_fields; ++$i) {
                 while ($row = $result->fetch_row()) {
                     if ($s == 0) {
-                        $return .= "INSERT INTO `" . $table . "` ( ";
-                        foreach ($fields as $k => $field) {
-                            $return .= "`" . $field . "`";
-                            $k != count($fields) - 1 ? $return .= " ," : '';
-                        }
-                        $return .= " ) VALUES " . PHP_EOL;
-                    } elseif (is_int($s / $limit) === true) {
-                        $return = substr($return, 0, -3);
-                        $return .= ";" . PHP_EOL;
-                        $return .= "INSERT INTO `" . $table . "` ( ";
-                        foreach ($fields as $k => $field) {
-                            $return .= "`" . $field . "`";
-                            $k != count($fields) - 1 ? $return .= " ," : '';
-                        }
-                        $return .= " ) VALUES " . PHP_EOL;
-                    }
-                    $return .= "(";
+						$return .= "INSERT INTO `" . $table . "` ( $fields ) VALUES ".$nl.'(';
+					} elseif (is_int($s / $limit) === true) {
+						$return .= ';'.$nl."INSERT INTO `" . $table . "` ( $fields ) VALUES ".$nl.'(';
+					} else {
+						$return.= ','.$nl."(";
+					}
                     for ($j = 0; $j < $num_fields; $j++) {
                         $row[$j] = str_replace("\n", "\\n", addslashes($row[$j]));
                         if (isset($row[$j])) {
@@ -351,23 +312,16 @@ class SQL_Backup {
                         } else {
                             $return .= '""';
                         }
-                        if ($j < ($num_fields - 1)) {
-                            $return .= ',';
-                        }
+                        if ($j < ($num_fields - 1)) $return .= ',';
                     }
                     $return .= ")";
-                    $return .= "," . PHP_EOL;
                     ++$s;
                 }
             }
-            $return = substr($return, 0, -3);
-            $return .= ';' . PHP_EOL;
-            $return .= PHP_EOL;
-            $return .= PHP_EOL;
-            $return .= "/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;" . PHP_EOL;
-            $return .= "/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;" . PHP_EOL;
-            $return .= "/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;" . PHP_EOL;
-            
+            $return .= ';' . $nl.$nl.$nl;
+            $return .= "/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;" . $nl;
+            $return .= "/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;" . $nl;
+            $return .= "/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;" . $nl;            
             $foreturn[$table] = $return;
         }
         return $foreturn;
