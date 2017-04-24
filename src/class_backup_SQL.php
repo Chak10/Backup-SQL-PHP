@@ -284,7 +284,7 @@ class SQL_Backup {
             $fields = '';
             while ($field_info = $result->fetch_field()) {
                 $fields .= "`" . $field_info->name . "`,";
-				$db = $field_info->db;
+		$db = $field_info->db;
             }
             $fields = substr($fields, 0, -1);			
             $return .= "-- Database: " . ($db) . $nl . "--" . $nl;
