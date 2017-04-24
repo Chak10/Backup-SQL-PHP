@@ -1,7 +1,7 @@
 <?php
 class SQL_Backup {
     
-    private $version = "1.0.5";
+    private $version = "1.0.6";
     private $site = "https://github.com/Chak10/Backup-SQL-By-Chak10.git";
     
     var $con;
@@ -265,46 +265,46 @@ class SQL_Backup {
             $info == false ? $this->res = false && $this->err = -5 && $this->info["MySQL_Errno"] = $con->errno && $this->info["MySQL_Error"] = $con->error : '';
             if (!$this->res)
                 return false;
-			$nl = PHP_EOL;
+            $nl = PHP_EOL;
             $info = $info->fetch_assoc();
-			$charset = $con->get_charset();
-            $return = "-- Backup SQL By Chak10" . $nl ."-- Version: " . ($this->version) . $nl ."-- Github: " . ($this->site) . $nl . "--" . $nl ."--" . $nl;
-            $return .= "-- Server Version: " . ($con->server_info) . $nl. "-- PHP Version: " . (PHP_VERSION) . $nl . "-- Host Info: " . ($con->host_info) . $nl;
-            $return .= "-- Date: " . (date('Y-m-d H:i:s')) . $nl . $nl. $nl;
-            $return .= "SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";" . $nl. "SET time_zone = \"+00:00\";" . $nl. $nl. $nl. $nl;
-            $return .= "/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;" . $nl. "/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;" . $nl. "/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;" . $nl. "/*!40101 SET NAMES utf8 */;" . $nl. $nl. $nl;
-             $return .= "--" . $nl. "-- Charset General: " . ($charset->charset) . $nl."-- Charset Table: " . ($info['Collation']) . $nl."--" . $nl. $nl;
-            $return .= "-- ------------------------------------------" . $nl. $nl."--" . $nl;
+            $charset = $con->get_charset();
+            $return = "-- Backup SQL By Chak10" . $nl . "-- Version: " . ($this->version) . $nl . "-- Github: " . ($this->site) . $nl . "--" . $nl . "--" . $nl;
+            $return .= "-- Server Version: " . ($con->server_info) . $nl . "-- PHP Version: " . (PHP_VERSION) . $nl . "-- Host Info: " . ($con->host_info) . $nl;
+            $return .= "-- Date: " . (date('Y-m-d H:i:s')) . $nl . $nl . $nl;
+            $return .= "SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";" . $nl . "SET time_zone = \"+00:00\";" . $nl . $nl . $nl . $nl;
+            $return .= "/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;" . $nl . "/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;" . $nl . "/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;" . $nl . "/*!40101 SET NAMES utf8 */;" . $nl . $nl . $nl;
+            $return .= "--" . $nl . "-- Charset General: " . ($charset->charset) . $nl . "-- Charset Table: " . ($info['Collation']) . $nl . "--" . $nl . $nl;
+            $return .= "-- ------------------------------------------" . $nl . $nl . "--" . $nl;
             $return .= "-- Table Name: `" . ($table) . "`" . $nl;
             $res = $con->query("SHOW CREATE TABLE `" . $table . "`");
             $table_init = $res->fetch_row();
             $result = $con->query("SELECT * FROM `" . $table . "`");
             $num_fields = $result->field_count;
             $num_rows = $result->num_rows;
-			$fields = '';
-			while ($field_info = $result->fetch_field()){
-				$fields .= "`".$field_info->name."`,";
-			}
-			$fields = substr($fields,0,-1);
-            $return .= "-- Database: " . ($db) . $nl. "--" . $nl;
+            $fields = '';
+            while ($field_info = $result->fetch_field()) {
+                $fields .= "`" . $field_info->name . "`,";
+            }
+            $fields = substr($fields, 0, -1);
+            $return .= "-- Database: " . ($db) . $nl . "--" . $nl;
             $this->info_t === true ? $this->info[$table] = array(
                 "R" => $num_rows,
                 "C" => $num_fields
             ) : '';
-			$db = $field_info->db;
+            $db = $field_info->db;
             $return .= "-- Columns: $num_fields" . $nl;
-            $return .= "-- Rows: $num_rows" . $nl. "--" . $nl.$nl;
+            $return .= "-- Rows: $num_rows" . $nl . "--" . $nl . $nl;
             $return .= "DROP TABLE IF EXISTS " . $table . ";" . $nl;
-            $return .= $table_init[1] . ";" . $nl.$nl.$nl;
+            $return .= $table_init[1] . ";" . $nl . $nl . $nl;
             for ($i = 0, $s = 0; $i < $num_fields; ++$i) {
                 while ($row = $result->fetch_row()) {
                     if ($s == 0) {
-						$return .= "INSERT INTO `" . $table . "` ( $fields ) VALUES ".$nl.'(';
-					} elseif (is_int($s / $limit) === true) {
-						$return .= ';'.$nl."INSERT INTO `" . $table . "` ( $fields ) VALUES ".$nl.'(';
-					} else {
-						$return.= ','.$nl."(";
-					}
+                        $return .= "INSERT INTO `" . $table . "` ( $fields ) VALUES " . $nl . '(';
+                    } elseif (is_int($s / $limit) === true) {
+                        $return .= ';' . $nl . "INSERT INTO `" . $table . "` ( $fields ) VALUES " . $nl . '(';
+                    } else {
+                        $return .= ',' . $nl . "(";
+                    }
                     for ($j = 0; $j < $num_fields; $j++) {
                         $row[$j] = str_replace("\n", "\\n", addslashes($row[$j]));
                         if (isset($row[$j])) {
@@ -312,16 +312,17 @@ class SQL_Backup {
                         } else {
                             $return .= '""';
                         }
-                        if ($j < ($num_fields - 1)) $return .= ',';
+                        if ($j < ($num_fields - 1))
+                            $return .= ',';
                     }
                     $return .= ")";
                     ++$s;
                 }
             }
-            $return .= ';' . $nl.$nl.$nl;
+            $return .= ';' . $nl . $nl . $nl;
             $return .= "/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;" . $nl;
             $return .= "/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;" . $nl;
-            $return .= "/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;" . $nl;            
+            $return .= "/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;" . $nl;
             $foreturn[$table] = $return;
         }
         return $foreturn;
