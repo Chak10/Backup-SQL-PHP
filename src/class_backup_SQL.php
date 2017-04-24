@@ -284,14 +284,14 @@ class SQL_Backup {
             $fields = '';
             while ($field_info = $result->fetch_field()) {
                 $fields .= "`" . $field_info->name . "`,";
+				$db = $field_info->db;
             }
-            $fields = substr($fields, 0, -1);
+            $fields = substr($fields, 0, -1);			
             $return .= "-- Database: " . ($db) . $nl . "--" . $nl;
             $this->info_t === true ? $this->info[$table] = array(
                 "R" => $num_rows,
                 "C" => $num_fields
             ) : '';
-            $db = $field_info->db;
             $return .= "-- Columns: $num_fields" . $nl;
             $return .= "-- Rows: $num_rows" . $nl . "--" . $nl . $nl;
             $return .= "DROP TABLE IF EXISTS " . $table . ";" . $nl;
