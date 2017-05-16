@@ -420,7 +420,9 @@ class SQL_Backup {
             $ext = explode(',', strtolower($ext));
         } elseif (is_array($ext)) {
             $ext = array_map('strtolower', $ext);
-        }
+        } else {
+	    $ext = array();		
+	}
         if (in_array("sql", $ext) || in_array("csv", $ext) || in_array("json", $ext)) {
             $this->ext = $ext;
         } elseif (in_array("all", $ext)) {
