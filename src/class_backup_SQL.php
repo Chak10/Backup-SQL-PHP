@@ -76,7 +76,8 @@ class SQL_Backup {
             $this->del_csv != null ? $del_c = $this->del_csv : $del_c = ',';
             $this->enc_csv != null ? $enc_c = $this->enc_csv : $enc_c = '';
             foreach ($this->ext as $type_ext) {
-                switch ($type_ext) {
+                $type_ext = trim($type_ext);
+				switch ($type_ext) {
                     case "sql":
                         $save == true ? $this->sql_exec($con, $tables, $limit) : $this->sql = $this->sql($con, $tables, $limit);
                         break;
