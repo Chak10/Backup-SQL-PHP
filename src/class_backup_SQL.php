@@ -1,7 +1,18 @@
 <?php
 class SQL_Backup {
     
-    private $version = "1.0.6";
+    /*
+    
+    GNU GENERAL PUBLIC LICENSE
+    Version 3, 29 June 2007
+    
+    Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
+    Everyone is permitted to copy and distribute verbatim copies
+    of this license document, but changing it is not allowed.
+    
+    */
+    
+    private $version = "1.0.7";
     private $site = "https://github.com/Chak10/Backup-SQL-By-Chak10.git";
     
     var $con;
@@ -21,9 +32,6 @@ class SQL_Backup {
     var $info_t;
     var $info = array();
     
-    const SQL = 13;
-    const CSV = 26;
-    const JSON = 49;
     
     function __construct($con = null, $table_name = null, $folder = null, $query_limit = null, $compress = null, $ext = null, $alltable_in_file = null, $save = null, $sql_unique = null) {
         $this->con = $con;
@@ -66,35 +74,21 @@ class SQL_Backup {
                 $tables = is_array($table_name) ? $table_name : explode(",", $table_name);
             }
             $this->del_csv != null ? $del_c = $this->del_csv : $del_c = ',';
-            $this->enc_csv != null ? $enc_c = $this->enc_csv : $enc_c = '"';
-            switch ($this->ext) {
-                case self::SQL:
-                    $save == true ? $this->sql_exec($con, $tables, $limit) : $this->sql = $this->sql($con, $tables, $limit);
-                    break;
-                case self::CSV:
-                    $save == true ? $this->csv_exec($con, $tables, $del_c, $enc_c) : $this->csv = $this->csv($con, $tables, $del_c, $enc_c);
-                    break;
-                case self::JSON:
-                    $save == true ? $this->json_exec($con, $tables) : $this->json = $this->json($con, $tables);
-                    break;
-                case (self::SQL + self::CSV):
-                    $save == true ? $this->sql_exec($con, $tables, $limit) : $this->sql = $this->sql($con, $tables, $limit);
-                    $save == true ? $this->csv_exec($con, $tables, $del_c, $enc_c) : $this->csv = $this->csv($con, $tables, $del_c, $enc_c);
-                    break;
-                case (self::SQL + self::JSON):
-                    $save == true ? $this->sql_exec($con, $tables, $limit) : $this->sql = $this->sql($con, $tables, $limit);
-                    $save == true ? $this->json_exec($con, $tables) : $this->json = $this->json($con, $tables);
-                    break;
-                case (self::JSON + self::CSV):
-                    $save == true ? $this->json_exec($con, $tables) : $this->json = $this->json($con, $tables);
-                    $save == true ? $this->csv_exec($con, $tables, $del_c, $enc_c) : $this->csv = $this->csv($con, $tables, $del_c, $enc_c);
-                    break;
-                default:
-                    $save == true ? $this->sql_exec($con, $tables, $limit) : $this->sql = $this->sql($con, $tables, $limit);
-                    $save == true ? $this->json_exec($con, $tables) : $this->json = $this->json($con, $tables);
-                    $save == true ? $this->csv_exec($con, $tables, $del_c, $enc_c) : $this->csv = $this->csv($con, $tables, $del_c, $enc_c);
-                    break;
+            $this->enc_csv != null ? $enc_c = $this->enc_csv : $enc_c = '';
+            foreach ($this->ext as $type_ext) {
+                switch ($type_ext) {
+                    case "sql":
+                        $save == true ? $this->sql_exec($con, $tables, $limit) : $this->sql = $this->sql($con, $tables, $limit);
+                        break;
+                    case "csv":
+                        $save == true ? $this->csv_exec($con, $tables, $del_c, $enc_c) : $this->csv = $this->csv($con, $tables, $del_c, $enc_c);
+                        break;
+                    case "json":
+                        $save == true ? $this->json_exec($con, $tables) : $this->json = $this->json($con, $tables);
+                        break;
+                }
             }
+            
         }
         
     }
@@ -208,7 +202,7 @@ class SQL_Backup {
         return $forjson;
     }
     
-    private function csv($con, $tables, $del = ',', $enc = '"') {
+    private function csv($con, $tables, $del = ',', $enc = '') {
         if (is_array($tables) === false)
             return false;
         $return = array();
@@ -284,9 +278,9 @@ class SQL_Backup {
             $fields = '';
             while ($field_info = $result->fetch_field()) {
                 $fields .= "`" . $field_info->name . "`,";
-		$db = $field_info->db;
+                $db = $field_info->db;
             }
-            $fields = substr($fields, 0, -1);			
+            $fields = substr($fields, 0, -1);
             $return .= "-- Database: " . ($db) . $nl . "--" . $nl;
             $this->info_t === true ? $this->info[$table] = array(
                 "R" => $num_rows,
@@ -421,22 +415,23 @@ class SQL_Backup {
     private function checkext($ext) {
         if (!$this->res)
             return false;
-        if (is_null($ext)) {
-            $this->ext = self::SQL;
-        } elseif (is_string($ext)) {
-            if (strpos($ext, ',') === true) {
-                $ext = explode(',', $ext);
-                $this->ext = array_sum($ext);
-            } else {
-                $this->ext = (int) $ext;
-            }
+        if (is_string($ext)) {
+            $ext = explode(',', strtolower($ext));
         } elseif (is_array($ext)) {
-            $this->ext = array_sum($ext);
-        } elseif (is_int($ext)) {
+            $ext = array_map('strtolower', $ext);
+        }
+        if (in_array("sql", $ext) || in_array("csv", $ext) || in_array("json", $ext)) {
             $this->ext = $ext;
+        } elseif (in_array("all", $ext)) {
+            $this->ext = array(
+                "sql",
+                "csv",
+                "json"
+            );
         } else {
-            $this->err = -12;
-            $this->res = false;
+            $this->ext = array(
+                "sql"
+            );
         }
     }
     
