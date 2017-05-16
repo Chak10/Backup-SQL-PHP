@@ -115,7 +115,89 @@ $backup->compress = true;
 
 [More info](https://github.com/Chak10/Backup_SQL-PHP-ByChak10/blob/master/benchmark/bench_size_exec.md)
 
+### $_ext_ (_String or Array_)
+
+**NEW VERSION >= V1.0.7**
+
+The extension of the destination file.
+
+- SQL extension
+
+``` php
+$backup->ext = "sql";
+
+// or 
+
+$backup->ext = "SQL";
+
+// or 
+
+$backup->ext = array("sql");
+
+// or 
+
+$backup->ext = array("SQL");
+```
+- CSV extension
+
+``` php
+$backup->ext = "csv";
+```
+and other ... (Look SQL)
+
+- JSON extension
+
+``` php
+$backup->ext = "json";
+```
+and other ... (Look SQL)
+
+#### Combinations
+​
+- SQL + CSV 
+​
+``` php
+$backup->ext = "sql,csv"; // Only the comma as a separator. !!!
+
+// or
+
+$backup->ext = array("sql","csv");
+```
+**Same for JSON and CSV or JSON and SQL**
+
+ **_For all three formats_**
+ 
+- SQL + CSV + JSON
+​
+``` php
+$backup->ext = "all";
+
+// or
+
+$backup->ext = array("all");
+
+// or
+
+$backup->ext = "sql,csv,json"; // Only the comma as a separator. !!!
+
+// or
+
+$backup->ext = array("sql","csv","json");
+```
+> NOTE: If you use the CSV extension, if you want you can add the field delimiter and the enclosure of the camps.  
+By default they are:
+- Delimiter => ,
+- Enclosure => "
+
+>Example: "Data","DATA2","datA3"
+
+``` php
+$backup->del_csv=";";
+$backup->enc_csv="'";
+```
 ### $_ext_ (_Int_)
+
+**OLD VERSION < V1.0.7**
 
 The extension of the destination file.
 
