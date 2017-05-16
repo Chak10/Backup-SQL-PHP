@@ -303,9 +303,9 @@ class SQL_Backup {
                     for ($j = 0; $j < $num_fields; $j++) {
                         $row[$j] = str_replace("\n", "\\n", addslashes($row[$j]));
                         if (isset($row[$j])) {
-                            $return .= '"' . $row[$j] . '"';
+                            $return .= "'" . $row[$j] . "'";
                         } else {
-                            $return .= '""';
+                            $return .= "''";
                         }
                         if ($j < ($num_fields - 1))
                             $return .= ',';
