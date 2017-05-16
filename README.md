@@ -187,9 +187,11 @@ $backup->ext = array("sql","csv","json");
 > NOTE: If you use the CSV extension, if you want you can add the field delimiter and the enclosure of the camps.  
 By default they are:
 - Delimiter => ,
-- Enclosure => "
+- Enclosure => 
 
->Example: "Data","DATA2","datA3"
+>Example: Data,DATA2,datA3
+
+SETTING
 
 ``` php
 $backup->del_csv=";";
@@ -266,10 +268,11 @@ $backup->ext = "39";
 > NOTE: If you use the CSV extension, if you want you can add the field delimiter and the enclosure of the camps.  
 By default they are:
 - Delimiter => ,
-- Enclosure => "
+- Enclosure => 
 
->Example: "Data","DATA2","datA3"
+>Example: Data,DATA2,datA3
 
+SETTING
 ``` php
 $backup->del_csv=";";
 $backup->enc_csv="'";
@@ -365,7 +368,7 @@ Example:
 - Save = true
 - Sql_unique = false
 - Del= [,]
-- Enc= ["]
+- Enc= []
 - Close = null
 - Info_t = null
 - Json_pretty = null
