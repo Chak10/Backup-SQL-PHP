@@ -335,7 +335,7 @@ class SQL_Backup {
                 $this->err = -11;
                 return false;
             }
-            $name_zip = $this->folder . "/" . $extens . '/' . $tab_name . '_' . md5($tab_name) . '.' . $extens . '.zip';
+            $name_zip = $this->folder . "/" . $extens . '/' . $tab_name . '_' . hash('crc32b', $tab_name) . '.' . $extens . '.zip';
             $res = $zip->open($name_zip, ZIPARCHIVE::CREATE);
             if (!file_exists($name_zip)) {
                 $comment = "Created with Backup SQL By Chak10" . PHP_EOL;
@@ -345,13 +345,13 @@ class SQL_Backup {
                 $comment = $zip->getArchiveComment() . PHP_EOL;
             }
         } else {
-            $res = $zip->open($this->folder . "/" . $extens . '/' . $table . '_' . time() . '-' . md5($table . microtime(true)) . '.' . $extens . '.zip', ZipArchive::CREATE);
+            $res = $zip->open($this->folder . "/" . $extens . '/' . $table . '_' . time() . '-' . hash('crc32b', microtime(true)) . '.' . $extens . '.zip', ZipArchive::CREATE);
             $comment = "Created with Backup SQL By Chak10" . PHP_EOL;
             $comment .= "Version: " . ($this->version) . PHP_EOL;
             $comment .= "Github: " . ($this->site) . PHP_EOL;
         }
         if ($res === TRUE) {
-            $zip->addFromString($table . '-' . date('Y-m-d_H:i:s') . '-' . md5($table . microtime(true)) . '.' . $extens, $str);
+            $zip->addFromString($table . '-' . date('Y-m-d_H:i:s') . '-' . hash('crc32b', microtime(true)) . '.' . $extens, $str);
             $comment .= "Table: " . $table . " - CRC32b: " . hash('crc32b', $str) . ' - Date: ' . date('Y-m-d H:i:s');
             $zip->setArchiveComment($comment);
             $zip->close();
@@ -381,7 +381,7 @@ class SQL_Backup {
             fwrite($fpc, $res) === false ? $this->res = false : $this->res = true;
             fclose($fpc);
         } else {
-            $name = $this->folder . "/" . $extens . '/' . $table . '_' . time() . '-' . md5($table . microtime(true)) . '.' . $extens;
+            $name = $this->folder . "/" . $extens . '/' . $table . '_' . time() . '-' . hash('crc32b', microtime(true)) . '.' . $extens;
             $fpc = @fopen($name, 'w');
             $fpc === false ? $this->res = false && $this->err = -10 : $this->res = true;
             if (!$this->res)
