@@ -194,8 +194,8 @@ By default they are:
 SETTING
 
 ``` php
-$backup->del_csv=";";
-$backup->enc_csv="'";
+$backup->del_csv=",";
+$backup->enc_csv=""";
 ```
 ### $_ext_ (_Int_)
 
