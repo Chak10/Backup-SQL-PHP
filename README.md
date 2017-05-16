@@ -18,7 +18,9 @@ var _**query_limit**_ (Int) => Number of queries at a time to execute in SQL [RE
 
 var _**compress**_ (Bool) => If set to true the result is compressed. (.zip)
 
-var _**ext**_ (Int) => The extension of the destination file. [READ EXT SECTION](https://github.com/Chak10/Backup-SQL-By-Chak10/blob/master/README.md#ext-int)
+var _**ext**_  (_String or Array_) [NEW VERSION >= V1.0.7] => The extension of the destination file. [READ EXT SECTION](https://github.com/Chak10/Backup-SQL-By-Chak10/blob/master/README.md#ext-int)
+
+var _**ext**_ (Int) [OLD VERSION < V1.0.7] => The extension of the destination file. [READ EXT SECTION](https://github.com/Chak10/Backup-SQL-By-Chak10/blob/master/README.md#ext-int)
 
 var _**alltable_in_file**_ (Bool) => If set to true: 
 - If the 'compress' variable is true all the files will be saved in a single zip file otherwise all will be saved individually
