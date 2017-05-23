@@ -1,10 +1,5 @@
 <?php
 	
-	$bk = new SQL_Backup ();
-	$bk->con("localhost","root","","francesco");
-	var_dump($bk);
-	var_dump($json);
-	
 	class DB {
 		
 		public $con;
@@ -397,7 +392,7 @@
 	
 	class SQL_Backup extends FORMAT {
 		
-		const version = "2.0.0 alpha";
+		const version = "1.1 alpha";
 		const site = "https://github.com/Chak10/Backup-SQL-By-Chak10.git";
 		
 		public $con;
