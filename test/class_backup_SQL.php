@@ -1,11 +1,4 @@
 <?php
-	//header("Content-Type:text/plain");
-	
-	$con = new SQL_Backup();
-	$con->con('localhost','francesco','carmineS1','francesco');
-	$test = $con->query_csv("alldata");
-	var_dump($test);
-	
 	class SQL_EXT {
 		
 		function __construct() {}
