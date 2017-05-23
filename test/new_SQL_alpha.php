@@ -14,7 +14,7 @@
 				return $this->con_mysqli($HOST, $USER, $PASSWD, $NAME, $PORT, $SOCK);
 				} elseif (class_exists("PDO") && in_array('mysql', PDO::getAvailableDrivers())) {
 				$this->type = "PDO";
-				return $this->con_pdo($HOST, $USER, $PASSWD, $NAME);
+				return $this->con_pdo($HOST, $USER, $PASSWD, $NAME, $PORT, $SOCK);
 				} else {
 				return false;
 			}
@@ -62,7 +62,6 @@
 		
 		protected static function sql_mysqli($con,$table,$limit) {
 			
-			if ($con === null) return false;
 			if (!is_int($limit)) $limit = 400;
 			
 			$fields = '';
@@ -158,7 +157,6 @@
 		
 		protected static function sql_pdo($con,$table,$limit,$db) {
 			
-			if ($con === null) return false;
 			if (!is_int($limit)) $limit = 400;
 			
 			$fields = '';
@@ -253,8 +251,6 @@
 		
 		protected static function csv_mysqli($con,$table,$del, $enc,$header_name) {
 			
-			if ($con === null) return false;
-			
 			$fields = '';
 			$del = trim($del);
 			
@@ -296,8 +292,6 @@
 		
 		protected static function csv_pdo($con,$table,$del, $enc,$header_name,$db) {
 			
-			if ($con === null) return false;
-			
 			$fields = '';
 			$del = trim($del);
 			
@@ -338,8 +332,6 @@
 		
 		protected static function json_mysqli($con,$table,$options) {
 			
-			if ($con === null) return false;
-			
 			$return = $res = array();
 			
 			$result = $con->query("SELECT * FROM `" . $table . "`");
@@ -360,8 +352,6 @@
 		}
 		
 		protected static function json_pdo($con,$table,$options) {
-			
-			if ($con === null) return false;
 			
 			$return = $res = array();
 			
@@ -384,36 +374,36 @@
 			if(function_exists("utf8_encode")) return utf8_encode($str);
 			if(function_exists("mb_convert_encoding")) return mb_convert_encoding($str, "UTF-8", "auto");
 			if(function_exists("iconv") && function_exists("mb_detect_encoding") && function_exists("mb_detect_order")) 
-				return iconv(mb_detect_encoding($str, mb_detect_order(), true), "UTF-8", $str);
+			return iconv(mb_detect_encoding($str, mb_detect_order(), true), "UTF-8", $str);
 			return $str;
 		}
-	
+		
 	}
-	
+		
 	class SQL_Backup extends FORMAT {
 		
 		const version = "1.1 alpha";
 		const site = "https://github.com/Chak10/Backup-SQL-By-Chak10.git";
 		
 		public $con;
-		public $compress;
 		public $table_name;
 		public $folder;
 		public $qlimit;
+		public $compress;
+		public $ext;
 		public $alltable_in_file;
-		public $err;
-		public $res;
+		public $save;
 		public $del_csv;
 		public $enc_csv;
-		public $save;
 		public $sql_unique;
-		public $close;
 		public $json_pretty;
-		public $info_t;
+		
+		public $res;
+		public $err;		
 		public $info = array();
 		
 		
-		public function __construct($con = null, $table_name = null, $folder = null, $query_limit = null, $compress = null, $ext = null, $alltable_in_file = null, $save = null, $sql_unique = null) {
+		function __construct($con = null, $table_name = null, $folder = null, $query_limit = null, $compress = null, $ext = null, $alltable_in_file = null, $save = null, $sql_unique = null) {
 			$this->con = $con;
 			$this->table_name = $table_name;
 			$this->folder = $folder;
@@ -425,18 +415,55 @@
 			$this->sql_unique = $sql_unique;
 		}
 		
-		public function query_sql($table,$limit = 400) {
+		public function execute() {
+			$con = $this->con;
+			$save = $this->save;
+			if($this->check($con,"con") == false) return false;
+			if($this->check($this->folder,"folder") == false) return false;
+			if($this->check($this->table_name,"table") !== false){
+				$tables = array();
+                $result = $con->query("SHOW TABLES");
+                while ($table_row = $result->fetch_row()) {
+                   $this->table_name[] = $tables[] = $table_row[0];
+				}
+				} else {
+				$tables = $this->table_name;
+			}
+			$this->check($this->ext,"ext");
+			$this->check($save,"save");
+			$this->check($this->alltable_in_file,"one_file");
+			$this->check($this->sql_unique,"unique_sql");
+			
+			foreach ($this->ext as $type_ext) {
+                $type_ext = trim($type_ext);
+				switch ($type_ext) {
+                    case "sql":
+					
+					
+					break;
+                    case "csv":
+					
+					break;
+                    case "json":
+					
+					break;
+				}
+			}
+			
+		}
+		
+		protected function query_sql($table,$limit = 400) {
 			$this->type_con();
 			if ($this->type === null) return false;
 			elseif($this->type == "mysqli") return FORMAT::sql_mysqli($this->con,$table,$limit);
 			elseif ($this->type == "PDO") return FORMAT::sql_pdo($this->con,$table,$limit,$this->db);
 		}
 		
-		public function query_csv($table,$header_name = true) {
+		protected function query_csv($table,$header_name = true) {
 			if($header_name !== true && $header_name !== false)$header_name = true;
-			if($this->del_csv !==null && is_string($this->del_csv)) $del = $this->del_csv;
+			if($this->del_csv !=null) $del = $this->del_csv;
 			else $del = ',';
-			if($this->enc_csv !==null && is_string($this->enc_csv)) $enc = $this->enc_csv;
+			if($this->enc_csv !=null) $enc = $this->enc_csv;
 			else $enc = '';
 			$this->type_con();
 			if(!isset($this->db)) $db="Unknown";
@@ -447,7 +474,7 @@
 			
 		}
 		
-		public function query_json($table,$options = 0) {
+		protected function query_json($table,$options = 0) {
 			$this->type_con();
 			if ($this->type === null) return false;
 			elseif($this->type == "mysqli") return FORMAT::json_mysqli($this->con,$table,$options);
@@ -462,7 +489,59 @@
 				else return $this->type = null;
 			}
 		}
-	
+		
+		private function check($in,$t) {
+			switch($t){
+				case "con": 
+				if (is_object($in) && isset($in->host_info)) return true;
+				if(is_object($in) && $in->getAttribute(PDO::ATTR_CONNECTION_STATUS) !==null) return true;
+				return false;
+				break;
+				case "tables":
+				if (is_array($in)) return true;
+				if (is_string($in) && $in != "*" && $in != "") return $this->table_name = explode(",",$in);
+				return false;
+				break;
+				case "folder": 
+				$res = $res_2 = true;
+				if(!is_string($in)) $in = "backup/database";
+				if(!is_dir($in)) $res = mkdir($in, 0764, true);
+				if(!is_writable($in)) $res_2 = chmod($in, 0764);
+				$this->folder = $in;
+				return $res && $res_2;
+				break;
+				case "ext": 
+				if (is_string($in)) {
+					$in = explode(',', strtolower($in));
+					} elseif (is_array($in)) {
+					$in = array_map('strtolower', $in);
+					} else {
+					$in = array();		
+				}
+				if (in_array("sql", $in) || in_array("csv", $in) || in_array("json", $in)) {
+					$this->ext = $in;
+					} elseif (in_array("all", $in)) {
+					$this->ext = array("sql","csv","json");
+					} else {
+					$this->ext = array("sql");
+				}
+				break;
+				case "save": 
+				if($in === true || $in === false) $this->save = $in;
+				else $this->save = true;
+				break;
+				case "one_file": 
+				if($in === true || $in === false) $this->alltable_in_file = $in;
+				else $this->alltable_in_file = false;
+				break;
+				case "unique_sql": 
+				if($in === true || $in === false) $this->sql_unique = $in;
+				else $this->sql_unique = false;
+				break;
+			}
+			
+		}
+		
 		
 	}
 	
