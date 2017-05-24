@@ -5,9 +5,9 @@
 - JSON: 0.35
 ## NEW
 ### NO SAVE (AVG X10)
-- SQL: 3.199031662941 
+- SQL: 2.3134724855423 
 - CSV: 1.0425449371338
-- JSON: 3.1982564687729 <= Because utf8encode is added for json utf8 error
+- JSON: 1.717077589035 <= utf8encode added for json utf8 error
 ### DIR
 - SQL: 3.0444118976593
 - CSV: 2.084235906601
