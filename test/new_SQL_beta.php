@@ -432,31 +432,107 @@
 			}
 			return true;
 		}
-		/* Not completed */
+		
 		protected static function tar_compress($name_tar, $type = "gz", $index = 9) {
+			$temp = dirname($name_tar). DIRECTORY_SEPARATOR ."temp".microtime(true).".tar";
+			$temp_dir = dirname($name_tar). DIRECTORY_SEPARATOR . "temp";
 			switch ($type) {
 				case 'gz':
                 $name = $name_tar . '.gz';
 				if(!file_exists($name)) return file_put_contents($name, gzencode(file_get_contents($name_tar), $index, FORCE_GZIP)) && unlink($name_tar);
-                $zd = gzopen($name, "r");
-				$contents = gzread($zd, 10000);
-				gzclose($zd);
-				$temp = "temp".microtime(true).".tar"
-				file_put_contents($temp, $contents);
-				
+                self::gz_decompress ($name,$temp);
+				self::overvrite_comp($temp,$temp_dir,$name_tar);
+				return file_put_contents($name, gzencode(file_get_contents($name_tar), $index, FORCE_GZIP)) && unlink($name_tar);
 				break;
 				case 'bz2':
-                return file_put_contents($name_tar . '.bz2', bzcompress(file_get_contents($name_tar), $index)) && unlink($name_tar);
+				$name = $name_tar . '.bz2';
+                if(!file_exists($name)) return file_put_contents($name_tar . '.bz2', bzcompress(file_get_contents($name_tar), $index)) && unlink($name_tar);
+				self::bz2_decompress ($name,$temp);
+				self::overvrite_comp($temp,$temp_dir,$name_tar);
+				return file_put_contents($name_tar . '.bz2', bzcompress(file_get_contents($name_tar), $index)) && unlink($name_tar);
                 break;
 				case 'deflate':
-                return file_put_contents($name_tar . '.gz', gzencode(file_get_contents($name_tar), $index, FORCE_DEFLATE)) && unlink($name_tar);
-                break;
+				$name = $name_tar . '.gz';
+                if(!file_exists($name)) return file_put_contents($name_tar . '.gz', gzencode(file_get_contents($name_tar), $index, FORCE_DEFLATE)) && unlink($name_tar);
+                self::gz_decompress ($name,$temp);
+				self::overvrite_comp($temp,$temp_dir,$name_tar);
+				return file_put_contents($name_tar . '.gz', gzencode(file_get_contents($name_tar), $index, FORCE_DEFLATE)) && unlink($name_tar);
+				break;
 			}
 			return false;
 		}
 		
+		protected static function overvrite_comp($temp,$temp_dir,$name_tar){
+			self::extract_tar($temp,$temp_dir,true)&& unlink($temp);
+			self::extract_tar($name_tar,$temp_dir,true)&& unlink($name_tar);
+			self::create_tar($name_tar,$temp_dir);
+			self::delete_temp($temp_dir);
+		}
+		
+		protected static function gz_size($file_gz){
+			$file = fopen($file_gz, "rb");
+			fseek($file, -4, SEEK_END);
+			$buf = fread($file, 4);
+			$size = unpack("V", $buf);
+			$size = end($size);
+			fclose($file);
+			return $size;		
+		}
+		
+		protected static function gz_decompress ($name,$temp){
+			$fh = gzopen($name, "r");
+			$contents = gzread($fh, self::gz_size($name));
+			gzclose($fh);	
+			return file_put_contents($temp, $contents);	
+		}
+		
+		protected static function bz2_decompress ($name,$temp){
+			$decomp_file = '';
+			$fh = bzopen($name,'r');				
+			do{
+				$decomp_file .= $buffer = bzread($fh,4096);
+				if($buffer === FALSE) $sp = true;
+				if(bzerror($fh) !== 0) $sp = true;
+				$sp = feof($fh);
+			} while(!$sp);
+			bzclose($fh);
+			file_put_contents($temp, $decomp_file);
+		}
+		
+		protected static function extract_tar($tar,$dir,$ow = false){
+			try {
+				$phar = new PharData($tar);
+				$phar->extractTo($dir,null,$ow);
+				} catch (Exception $e) {
+				return $e->getMessage();
+			}
+			return true;
+		}
+		
+		protected static function create_tar($tar,$dir){
+			try {
+				$phar = new PharData($tar);
+				$phar->buildFromDirectory($dir);
+				} catch (Exception $e) {
+				return $e->getMessage();
+			}
+			return true;
+		}
+		
+		protected static function delete_temp($dir){
+			$it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+			$files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+			foreach($files as $file) {
+				if ($file->isDir()){
+					rmdir($file->getRealPath());
+					} else {
+					unlink($file->getRealPath());
+				}
+			}
+			rmdir($dir);
+		}
+		
 	}
-	
 	class SQL_Backup extends FILES {
 		
 		const version = "1.0 beta";
@@ -496,9 +572,9 @@
 			$res = array();
 			$con = $this->con;
 			if ($this->check($con, "con") == false)
-            return false;
+			return false;
 			if ($this->check($this->folder, "folder") == false)
-            return false;
+			return false;
 			if ($this->check($this->table_name, "table") !== false) {
 				$tables = array();
 				$result = $con->query("SHOW TABLES");
@@ -518,9 +594,9 @@
 			foreach ($this->ext as $type_ext) {
 				$type_ext = trim($type_ext);
 				if ($save == false)
-                $res[$type_ext] = $this->create($type_ext, $tables);
+				$res[$type_ext] = $this->create($type_ext, $tables);
 				else
-                $res = $this->save($type_ext, $tables, $this->folder . DIRECTORY_SEPARATOR . $this->fname);
+				$res = $this->save($type_ext, $tables, $this->folder . DIRECTORY_SEPARATOR . $this->fname);
 			}
 			$this->clean_var();
 			return $this->res = $res;
@@ -532,17 +608,17 @@
 				if ($type == "sql") {
 					$option = 400;
 					if (is_int($this->qlimit))
-                    $option = $this->qlimit;
+					$option = $this->qlimit;
 					$res[$table] = $this->query_sql($table, $option);
 					} elseif ($type == "csv") {
 					$option = true;
 					if ($this->header_name === true || $this->header_name === false)
-                    $option = $this->header_name;
+					$option = $this->header_name;
 					$res[$table] = $this->query_csv($table, $option);
 					} elseif ($type == "json") {
 					$option = 0;
 					if ($type_ext == "json" && is_int($this->json_options))
-                    $option = $this->json_options;
+					$option = $this->json_options;
 					$res[$table] = $this->query_json($table, $option);
 				}
 			}
@@ -557,31 +633,31 @@
 				if ($ext == "sql") {
 					$option = 400;
 					if (is_int($this->qlimit))
-                    $option = $this->qlimit;
+					$option = $this->qlimit;
 					if ($this->sql_unique == true) {
 						$tb .= $this->query_sql($table, $option);
 						} else {
 						$tb = $this->query_sql($table, $option);
 						$name = "TB" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].sql";
 						if ($this->_save($tb, $name, $filename, 'sql') == false)
-                        ++$e;
+						++$e;
 					}
 					} elseif ($ext == "csv") {
 					$option = true;
 					if ($this->header_name === true || $this->header_name === false)
-                    $option = $this->header_name;
+					$option = $this->header_name;
 					$tb = $this->query_csv($table, $option);
 					$name = "TB" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].csv";
 					if ($this->_save($tb, $name, $filename, 'csv') == false)
-                    ++$e;
+					++$e;
 					} elseif ($ext == "json") {
 					$option = 0;
 					if (is_int($this->json_options))
-                    $option = $this->json_options;
+					$option = $this->json_options;
 					$tb = $this->query_json($table, $option);
 					$name = "TB" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].json";
 					if ($this->_save($tb, $name, $filename, 'json') == false)
-                    ++$e;
+					++$e;
 				}
 				++$n;
 			}
@@ -590,7 +666,7 @@
 				return $this->_save($tb, $name, $filename, 'sql');
 			}
 			if ($e == 1)
-            return true;
+			return true;
 			return false;
 		}
 		
@@ -632,140 +708,140 @@
 		protected function query_sql($table, $limit) {
 			$this->type_con();
 			if ($this->type === null)
-            return false;
+			return false;
 			elseif ($this->type == "mysqli")
-            return FORMAT::sql_mysqli($this->con, $table, $limit);
+			return FORMAT::sql_mysqli($this->con, $table, $limit);
 			elseif ($this->type == "PDO")
-            return FORMAT::sql_pdo($this->con, $table, $limit, $this->db);
+			return FORMAT::sql_pdo($this->con, $table, $limit, $this->db);
 		}
 		
 		protected function query_csv($table, $header_name) {
 			if ($header_name !== true && $header_name !== false)
-            $header_name = true;
+			$header_name = true;
 			if ($this->del_csv != null)
-            $del = $this->del_csv;
+			$del = $this->del_csv;
 			else
-            $del = ',';
+			$del = ',';
 			if ($this->enc_csv != null)
-            $enc = $this->enc_csv;
+			$enc = $this->enc_csv;
 			else
-            $enc = '';
+			$enc = '';
 			$this->type_con();
 			if (!isset($this->db))
-            $db = "Unknown";
+			$db = "Unknown";
 			else
-            $db = $this->db;
+			$db = $this->db;
 			if ($this->type === null)
-            return false;
+			return false;
 			elseif ($this->type == "mysqli")
-            return FORMAT::csv_mysqli($this->con, $table, $del, $enc, $header_name);
+			return FORMAT::csv_mysqli($this->con, $table, $del, $enc, $header_name);
 			elseif ($this->type == "PDO")
-            return FORMAT::csv_pdo($this->con, $table, $del, $enc, $header_name, $db);
+			return FORMAT::csv_pdo($this->con, $table, $del, $enc, $header_name, $db);
 			
 		}
 		
 		protected function query_json($table, $options) {
 			$this->type_con();
 			if ($this->type === null)
-            return false;
+			return false;
 			elseif ($this->type == "mysqli")
-            return FORMAT::json_mysqli($this->con, $table, $options);
+			return FORMAT::json_mysqli($this->con, $table, $options);
 			elseif ($this->type == "PDO")
-            return FORMAT::json_pdo($this->con, $table, $options);
+			return FORMAT::json_pdo($this->con, $table, $options);
 		}
 		
 		private function type_con() {
 			if ($this->type === null) {
 				$con = $this->con;
 				if (is_object($con) && isset($con->host_info))
-                return $this->type = "mysqli";
+				return $this->type = "mysqli";
 				elseif (is_object($con) && $con->getAttribute(PDO::ATTR_CONNECTION_STATUS) !== null)
-                return $this->type = "PDO";
+				return $this->type = "PDO";
 				else
-                return $this->type = null;
+				return $this->type = null;
 			}
 		}
 		
 		private function check($in, $t) {
 			switch ($t) {
 				case "con":
-                if (is_object($in) && isset($in->host_info))
+				if (is_object($in) && isset($in->host_info))
 				return true;
-                if (is_object($in) && $in->getAttribute(PDO::ATTR_CONNECTION_STATUS) !== null)
+				if (is_object($in) && $in->getAttribute(PDO::ATTR_CONNECTION_STATUS) !== null)
 				return true;
-                return false;
-                break;
+				return false;
+				break;
 				case "tables":
-                if (is_array($in))
+				if (is_array($in))
 				return true;
-                if (is_string($in) && $in != "*" && $in != "")
+				if (is_string($in) && $in != "*" && $in != "")
 				return $this->table_name = explode(",", $in);
-                return false;
-                break;
+				return false;
+				break;
 				case "filename":
-                if (!is_string($in))
+				if (!is_string($in))
 				$in = "Backup_MYSQL";
-                elseif (pathinfo($in, PATHINFO_EXTENSION) != '')
+				elseif (pathinfo($in, PATHINFO_EXTENSION) != '')
 				$in = pathinfo($in, PATHINFO_FILENAME);
-                $this->fname = $in;
-                break;
+				$this->fname = $in;
+				break;
 				case "folder":
-                $res = $res_2 = true;
-                if (!is_string($in))
+				$res = $res_2 = true;
+				if (!is_string($in))
 				$in = "backup/database";
-                if (!is_dir($in))
+				if (!is_dir($in))
 				$res = mkdir($in, 0764, true);
-                if (!is_writable($in))
+				if (!is_writable($in))
 				$res_2 = chmod($in, 0764);
-                $this->folder = $in;
-                return $res && $res_2;
-                break;
+				$this->folder = $in;
+				return $res && $res_2;
+				break;
 				case "ext":
-                if (is_string($in)) {
-                    $in = explode(',', strtolower($in));
+				if (is_string($in)) {
+					$in = explode(',', strtolower($in));
 					} elseif (is_array($in)) {
-                    $in = array_map('strtolower', $in);
+					$in = array_map('strtolower', $in);
 					} else {
-                    $in = array();
+					$in = array();
 				}
-                if (in_array("sql", $in) || in_array("csv", $in) || in_array("json", $in)) {
-                    $this->ext = $in;
+				if (in_array("sql", $in) || in_array("csv", $in) || in_array("json", $in)) {
+					$this->ext = $in;
 					} elseif (in_array("all", $in)) {
-                    $this->ext = array(
+					$this->ext = array(
 					"sql",
 					"csv",
 					"json"
-                    );
+					);
 					} else {
-                    $this->ext = array(
+					$this->ext = array(
 					"sql"
-                    );
+					);
 				}
-                break;
+				break;
 				case "compress":
-                if ($in === "tar" || $in === "zip" || $in === false)
+				if ($in === "tar" || $in === "zip" || $in === false)
 				$this->compress = $in;
-                else
+				else
 				$this->compress = false;
-                break;
+				break;
 				case "save":
-                if ($in === true || $in === false)
+				if ($in === true || $in === false)
 				$this->save = $in;
-                else
+				else
 				$this->save = true;
-                break;
+				break;
 				case "one_file":
-                if ($in === true || $in === false)
+				if ($in === true || $in === false)
 				$this->alltable_in_file = $in;
-                else
+				else
 				$this->alltable_in_file = false;
-                break;
+				break;
 				case "unique_sql":
-                if ($in === true || $in === false)
+				if ($in === true || $in === false)
 				$this->sql_unique = $in;
-                else
+				else
 				$this->sql_unique = false;
-                break;
+				break;
 			}
 			
 		}
