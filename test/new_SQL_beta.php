@@ -878,9 +878,9 @@
 		
 		/**
 			* Adds file header to the tar file, it is used before adding file content.
-			* @var $f: file resource (provided by eg. fopen)
-			* @var $phisfn: path to file
-			* @var $archfn: path to file in archive, directory names must be followed by '/'
+			* @var resource $f: file resource (provided by eg. fopen)
+			* @var string $phisfn: path to file
+			* @var string $archfn: path to file in archive, directory names must be followed by '/'
 		*/
 		
 		function TarAddHeader($f,$phisfn,$archfn){
