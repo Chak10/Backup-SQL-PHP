@@ -556,7 +556,7 @@ class SQL_Backup extends FILES {
                     $tb .= $this->query_sql($table, $option);
                 } else {
                     $tb = $this->query_sql($table, $option);
-                    $name = "Tb" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].sql";
+                    $name = "TB" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].sql";
                     if ($this->_save($tb, $name, $filename, 'sql') == false)
                         ++$e;
                 }
@@ -565,7 +565,7 @@ class SQL_Backup extends FILES {
                 if ($this->header_name === true || $this->header_name === false)
                     $option = $this->header_name;
                 $tb = $this->query_csv($table, $option);
-                $name = "Tb" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].csv";
+                $name = "TB" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].csv";
                 if ($this->_save($tb, $name, $filename, 'csv') == false)
                     ++$e;
             } elseif ($ext == "json") {
@@ -573,14 +573,14 @@ class SQL_Backup extends FILES {
                 if (is_int($this->json_options))
                     $option = $this->json_options;
                 $tb = $this->query_json($table, $option);
-                $name = "Tb" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].json";
+                $name = "TB" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].json";
                 if ($this->_save($tb, $name, $filename, 'json') == false)
                     ++$e;
             }
             ++$n;
         }
         if ($this->sql_unique == true) {
-            $name = "Tb" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].sql";
+            $name = "TB" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].sql";
             return $this->_save($tb, $name, $filename, 'sql');
         }
         if ($e == 1)
