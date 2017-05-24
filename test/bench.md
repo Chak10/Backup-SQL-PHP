@@ -6,5 +6,5 @@
 ## NEW
 ### NO SAVE (AVG X10)
 - SQL: 2.3134724855423 <= substr removed
-- CSV: 2.0555518627167 <= addslashes added
+- CSV: 1.0416909694672
 - JSON: 1.717077589035 <= utf8encode added for json utf8 error
