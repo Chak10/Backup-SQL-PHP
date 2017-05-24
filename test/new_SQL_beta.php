@@ -624,7 +624,7 @@ class SQL_Backup extends FILES {
                 $res[$table] = $this->query_csv($table, $option);
             } elseif ($type == "json") {
                 $option = 0;
-                if ($type_ext == "json" && is_int($this->json_options))
+                if (is_int($this->json_options))
                     $option = $this->json_options;
                 $res[$table] = $this->query_json($table, $option);
             }
