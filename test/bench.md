@@ -5,6 +5,6 @@
 - JSON: 0.35
 ## NEW
 ### NO SAVE (AVG X10)
-- SQL: 2.3134724855423 <= substr removed
+- SQL: 2.2447500705719 <= substr removed
 - CSV: 1.0416909694672
 - JSON: 1.717077589035 <= utf8encode added for json utf8 error
