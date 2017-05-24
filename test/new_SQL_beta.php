@@ -193,7 +193,7 @@ class FORMAT extends DB {
     
     protected static function csv_mysqli($con, $table, $del, $enc, $header_name) {
         
-        $fields = '';
+        $return = $fields = '';
         $del = trim($del);
         
         $result = $con->query("SELECT * FROM `" . $table . "`");
@@ -211,8 +211,6 @@ class FORMAT extends DB {
         
         if ($header_name === true)
             $return = $fields . PHP_EOL;
-        else
-            $return = "";
         
         /* TABLE DATA */
         
@@ -235,7 +233,7 @@ class FORMAT extends DB {
     
     protected static function csv_pdo($con, $table, $del, $enc, $header_name, $db) {
         
-        $fields = '';
+        $return = $fields = '';
         $del = trim($del);
         
         $result = DB::query_pdo($con, "SELECT * FROM `" . $table . "`");
@@ -253,8 +251,6 @@ class FORMAT extends DB {
         
         if ($header_name === true)
             $return = $fields . PHP_EOL;
-        else
-            $return = "";
         
         /* TABLE DATA */
         
