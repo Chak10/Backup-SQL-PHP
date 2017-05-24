@@ -58,6 +58,7 @@ class DB {
 
 class FORMAT extends DB {
     
+    
     protected static function sql_mysqli($con, $table, $limit) {
         
         if (!is_int($limit))
@@ -85,7 +86,7 @@ class FORMAT extends DB {
         
         /* HEADER */
         
-        $return = "-- Backup SQL By Chak10" . PHP_EOL . "-- Version: " . SQL_Backup::version . PHP_EOL . "-- Github: " . SQL_Backup::site . PHP_EOL . "--" . PHP_EOL . "--" . PHP_EOL . "-- Server Version: " . $con->server_info . PHP_EOL . "-- PHP Version: " . (PHP_VERSION) . PHP_EOL . "-- Host Info: " . $con->host_info . PHP_EOL . "-- Extension Used: MYSQLI" . PHP_EOL . "-- Date: " . date('Y-m-d H:i:s') . PHP_EOL . PHP_EOL . PHP_EOL . "SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";" . PHP_EOL . "SET time_zone = \"+00:00\";" . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL . "/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;" . PHP_EOL . "/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;" . PHP_EOL . "/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;" . PHP_EOL . "/*!40101 SET NAMES utf8 */;" . PHP_EOL . PHP_EOL . PHP_EOL . "--" . PHP_EOL . "-- Charset General: " . ($con->get_charset())->charset . PHP_EOL . "-- Charset Table: " . $info['Collation'] . PHP_EOL . "--" . PHP_EOL . PHP_EOL . "-- ------------------------------------------" . PHP_EOL . PHP_EOL . "--" . PHP_EOL . "-- Table Name: `$table`" . PHP_EOL . "-- Database: $db" . PHP_EOL . "--" . PHP_EOL . "-- Columns: $num_fields" . PHP_EOL . "-- Rows: $num_rows" . PHP_EOL . "--" . PHP_EOL . PHP_EOL;
+        $return = "-- Backup SQL By Chak10" . PHP_EOL . "-- Version: " . SQL_Backup::version . PHP_EOL . "-- Github: " . SQL_Backup::site . PHP_EOL . "--" . PHP_EOL . "--" . PHP_EOL . "-- Server Version: " . $con->server_info . PHP_EOL . "-- PHP Version: " . (PHP_VERSION) . PHP_EOL . "-- Host Info: " . $con->host_info . PHP_EOL . "-- Extension Used: MYSQLI" . PHP_EOL . "-- Date: " . date('Y-m-d H:i:s') . PHP_EOL . PHP_EOL . PHP_EOL . "SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";" . PHP_EOL . "SET time_zone = \"+00:00\";" . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL . "/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;" . PHP_EOL . "/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;" . PHP_EOL . "/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;" . PHP_EOL . "/*!40101 SET NAMES utf8 */;" . PHP_EOL . PHP_EOL . PHP_EOL . "--" . PHP_EOL . "-- Charset General: " . $con->get_charset()->charset . PHP_EOL . "-- Charset Table: " . $info['Collation'] . PHP_EOL . "--" . PHP_EOL . PHP_EOL . "-- ------------------------------------------" . PHP_EOL . PHP_EOL . "--" . PHP_EOL . "-- Table Name: `$table`" . PHP_EOL . "-- Database: $db" . PHP_EOL . "--" . PHP_EOL . "-- Columns: $num_fields" . PHP_EOL . "-- Rows: $num_rows" . PHP_EOL . "--" . PHP_EOL . PHP_EOL;
         
         /* TABLE CREATOR */
         
@@ -103,7 +104,7 @@ class FORMAT extends DB {
                 else
                     $return .= "," . PHP_EOL . "(";
                 for ($j = 0; $j < $num_fields; $j++) {
-                    $row[$j] = str_replace("\n", "\\n", addslashes($row[$j]));
+                    $row[$j] = addslashes($row[$j]);
                     if (isset($row[$j]))
                         $return .= "'" . $row[$j] . "'";
                     else
@@ -169,7 +170,7 @@ class FORMAT extends DB {
                 else
                     $return .= "," . PHP_EOL . "(";
                 for ($j = 0; $j < $num_fields; $j++) {
-                    $row[$j] = str_replace("\n", "\\n", addslashes($row[$j]));
+                    $row[$j] = addslashes($row[$j]);
                     if (isset($row[$j]))
                         $return .= "'" . $row[$j] . "'";
                     else
@@ -218,7 +219,6 @@ class FORMAT extends DB {
         for ($i = 0; $i < $num_fields; ++$i) {
             while ($row = $result->fetch_row()) {
                 for ($j = 0; $j < $num_fields; $j++) {
-                    $row[$j] = addslashes($row[$j]);
                     if (isset($row[$j]))
                         $return .= $enc . $row[$j] . $enc;
                     else
@@ -261,7 +261,6 @@ class FORMAT extends DB {
         for ($i = 0, $s = 0; $i < $num_fields; ++$i) {
             while ($row = $result->fetch(PDO::FETCH_NUM)) {
                 for ($j = 0; $j < $num_fields; $j++) {
-                    $row[$j] = addslashes($row[$j]);
                     if (isset($row[$j]))
                         $return .= $enc . $row[$j] . $enc;
                     else
@@ -277,18 +276,17 @@ class FORMAT extends DB {
     
     protected static function json_mysqli($con, $table, $options) {
         
-        $return = $res = array();
+        $return = array();
         
         $result = $con->query("SELECT * FROM `" . $table . "`");
         
         /* TABLE DATA */
         
-        
         while ($rows = $result->fetch_assoc()) {
-            foreach ($rows as $k => $v) {
-                $res[$k] = self::utf8_enc($v);
-            }
-            $return[] = $res;
+            if (extension_loaded("xml"))
+                $return[] = array_map('utf8_encode', $rows);
+            else
+                $return[] = $rows;
         }
         
         if (is_int($options) && $options != 0)
@@ -298,32 +296,22 @@ class FORMAT extends DB {
     
     protected static function json_pdo($con, $table, $options) {
         
-        $return = $res = array();
+        $return = array();
         
         $result = DB::query_pdo($con, "SELECT * FROM `" . $table . "`");
         
         /* TABLE DATA */
         
         while ($rows = $result->fetch(PDO::FETCH_ASSOC)) {
-            foreach ($rows as $k => $v) {
-                $res[$k] = self::utf8_enc($v);
-            }
-            $return[] = $res;
+            if (extension_loaded("xml"))
+                $return[] = array_map('utf8_encode', $rows);
+            else
+                $return[] = $rows;
         }
         
         if (is_int($options) && $options != 0)
             return json_encode($return, $options);
         return json_encode($return);
-    }
-    
-    protected static function utf8_enc($str) {
-        if (function_exists("utf8_encode"))
-            return utf8_encode($str);
-        if (function_exists("mb_convert_encoding"))
-            return mb_convert_encoding($str, "UTF-8", "auto");
-        if (function_exists("iconv") && function_exists("mb_detect_encoding") && function_exists("mb_detect_order"))
-            return iconv(mb_detect_encoding($str, mb_detect_order(), true), "UTF-8", $str);
-        return $str;
     }
     
 }
@@ -540,6 +528,7 @@ class FILES extends FORMAT {
     }
     
 }
+
 class SQL_Backup extends FILES {
     
     const version = "1.0 beta";
