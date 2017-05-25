@@ -70,8 +70,10 @@ class FORMAT extends DB {
         
         $info = $con->query("SHOW TABLE STATUS WHERE NAME LIKE '$table'");
         $info = $info->fetch_assoc();
+        
         $res = $con->query("SHOW CREATE TABLE `" . $table . "`");
         $table_init = $res->fetch_row();
+        
         $result = $con->query("SELECT * FROM `" . $table . "`");
         $num_fields = $result->field_count;
         $num_rows = $result->num_rows;
@@ -136,10 +138,13 @@ class FORMAT extends DB {
         
         $info = DB::query_pdo($con, "SHOW TABLE STATUS WHERE NAME LIKE '$table'");
         $info = $info->fetch(PDO::FETCH_ASSOC);
+        
         $res = DB::query_pdo($con, "SHOW CREATE TABLE `" . $table . "`");
         $table_init = $res->fetch(PDO::FETCH_NUM);
+        
         $charset = DB::query_pdo($con, "SELECT @@character_set_database;");
         $charset = $charset->fetch(PDO::FETCH_NUM);
+        
         $result = DB::query_pdo($con, "SELECT * FROM `" . $table . "`");
         $num_fields = $result->columnCount();
         $num_rows = $result->rowCount();
@@ -196,6 +201,8 @@ class FORMAT extends DB {
         $return = $fields = '';
         $del = trim($del);
         
+        /* DB REQUESTS */
+        
         $result = $con->query("SELECT * FROM `" . $table . "`");
         $num_fields = $result->field_count;
         
@@ -203,7 +210,6 @@ class FORMAT extends DB {
         
         while ($field_info = $result->fetch_field()) {
             $fields .= $enc . $field_info->name . $enc . $del;
-            $db = $field_info->db;
         }
         $fields = substr($fields, 0, -1);
         
@@ -235,6 +241,8 @@ class FORMAT extends DB {
         
         $return = $fields = '';
         $del = trim($del);
+        
+        /* DB REQUESTS */
         
         $result = DB::query_pdo($con, "SELECT * FROM `" . $table . "`");
         $num_fields = $result->columnCount();
@@ -274,6 +282,8 @@ class FORMAT extends DB {
         
         $return = array();
         
+        /* DB REQUESTS */
+        
         $result = $con->query("SELECT * FROM `" . $table . "`");
         
         /* TABLE DATA */
@@ -293,6 +303,8 @@ class FORMAT extends DB {
     protected static function json_pdo($con, $table, $options) {
         
         $return = array();
+        
+        /* DB REQUESTS */
         
         $result = DB::query_pdo($con, "SELECT * FROM `" . $table . "`");
         
