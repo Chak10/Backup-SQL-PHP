@@ -7,21 +7,21 @@ function __construct($con = null, $table_name = null, $ext = null, $fname = null
  ```
 var _**con**_ (Object) => MySQLi or PDO connection already opened. (N.B. It is recommended that you use the connection to the database inside the class) [READ CON SECTION](#con)
 
-var _**table_name**_ (String or Array) => The tables that you want to backup. [READ TABLE SECTION]()
+var _**table_name**_ (String or Array) => The tables that you want to backup. [READ TABLE SECTION](#-table_name)
 
-var _**ext**_  (_String or Array_) [NEW VERSION >= V1.0.7] => The extension of the destination file. [READ EXT SECTION]()
+var _**ext**_  (_String or Array_) [NEW VERSION >= V1.0.7] => The extension of the destination file. [READ EXT SECTION](#execute)
 
 var _**fname**_ (String) => The name of the output file/directory secondary
 
 var _**folder**_ (String) => The folder where the files will be saved 
 
-var _**query_limit**_ (Int) => Number of queries at a time to execute in SQL [READ QUERY LIMIT SECTION]()
+var _**query_limit**_ (Int) => Number of queries at a time to execute in SQL [READ QUERY LIMIT SECTION](#query_limit)
 
 var _**archive**_ (Bool) => It results as an archive. (.zip|.tar)
 
 var _**phpadmin**_ (Bool) => If set to true as a result a file that can be imported with phpadmin (sql|csv)
 
-var _**save**_ (Bool) => If set to false, the result will not be saved but will be loaded on the variable of class sql, csv, json (Based on request) [READ SAVE SECTION]()
+var _**save**_ (Bool) => If set to false, the result will not be saved but will be loaded on the variable of class sql, csv, json (Based on request) [READ SAVE SECTION](#save)
 
 var _**sql_unique**_ (Bool) => If set to true the SQL dump is a single file with all the tables. (Valid only for the SQL format)
 
@@ -44,7 +44,7 @@ $backup = new SQL_Backup();
 * @var $NAME string The MySQL database name.
 * @var $PORT int The port number to use when connecting to the database server otherwise it uses the default port
 * @var $SOCK string The socket name to use when connecting to a local database server otherwise it uses the default socket.
-* @result Bool | object
+* @return Bool | object
 **/
 
 public function con($HOST, $USER, $PASSWD, $NAME, $PORT = null, $SOCK = null) {}
@@ -80,7 +80,7 @@ $backup->con($HOST,$USER,$PASSWD,$NAME);
 ``` php
 /*
 * @var $debug Bool (True|False)
-* @result Bool | Array
+* @return Bool | Array
 */
 public function execute($debug = false) {}
 ```
