@@ -257,15 +257,14 @@ If set to FALSE, the result will not be saved but will be loaded on the variable
 
 EXAMPLE
 
-SQL:
+JSON:
 
-object(SQL_Backup)[1]
-
-  ...  
-  public 'sql' =>
-    array (size=1)    
-      'name_table' => string '...'
-      
+```txt
+array (size=1)
+  'json' => 
+    array (size=1)
+      'airports' => string '[{"id":"6523","ident":"00A","type":"heliport","name":"Total Rf Heliport","latitude_deg":"40.07080078125","longitude_deg":"-74.93360137939453","elevation_ft":"11","continent":"NA","iso_country":"US","iso_region":"US-PA","municipality":"Bensalem","scheduled_service":"no","gps_code":"00A","iata_code":"","local_code":"00A","home_link":"","wikipedia_link":"","keywords":""},{"id":"323361","ident":"00AA","type":"small_airport","name":"Aero B Ranch Airport","latitude_deg":"38.704022","longitude_deg":"-101.473911","'... (length=20358868)
+```
  
 ### $_sql_unique_  
 
