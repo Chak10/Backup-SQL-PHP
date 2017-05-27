@@ -90,7 +90,7 @@ Run Command
 If $debug **does not coincide** __(===)__ with true the result will be:
 
 - If $save is true and there are no errors return true otherwise return false
-- If $save is false and there are no errors return array with tables (Read $save Section) otherwise return false
+- If $save is false and there are no errors return array with tables [READ SAVE SECTION](#save) otherwise return false
 
 If $debug **coincides** __(===)__ with true the result will be an array with all the class variables.
 
