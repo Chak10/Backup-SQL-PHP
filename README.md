@@ -1,4 +1,4 @@
-# **Backup-SQL-By-Chak10**
+# **Backup-SQL-By-Chak10** (V 1.0.7)
 
 BACKUP TABLE OR DATABASE MySQL with PHP.
 
