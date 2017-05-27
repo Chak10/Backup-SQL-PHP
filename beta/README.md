@@ -9,7 +9,7 @@ var _**con**_ (Object) => MySQLi or PDO connection already opened. (N.B. It is r
 
 var _**table_name**_ (String or Array) => The tables that you want to backup. [READ TABLE SECTION](#-table_name)
 
-var _**ext**_  (_String or Array_) [NEW VERSION >= V1.0.7] => The extension of the destination file. [READ EXT SECTION](#execute)
+var _**ext**_  (_String or Array_) => The extension of the destination file. [READ EXT SECTION](#execute)
 
 var _**fname**_ (String) => The name of the output file/directory secondary
 
