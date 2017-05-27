@@ -7,7 +7,7 @@ class DB {
     public $err_c;
     
     public function con($HOST, $USER, $PASSWD, $NAME, $PORT = null, $SOCK = null) {
-        if (class_exists("mysqli")) {
+        if (!class_exists("mysqli")) {
             $this->type = "mysqli";
             return $this->con_mysqli($HOST, $USER, $PASSWD, $NAME, $PORT, $SOCK);
         } elseif (class_exists("PDO") && in_array('mysql', PDO::getAvailableDrivers())) {
@@ -18,9 +18,16 @@ class DB {
         }
     }
     
-    public static function query_pdo($con, $sql) {
-        $res = $con->prepare($sql);
-        $res->execute();
+    public function query_pdo($con, $sql) {
+        try {
+            $res = $con->prepare($sql);
+            if ($res)
+                $res->execute();
+        }
+        catch (PDOException $e) {
+            $this->last_err_db = $e->getMessage();
+            return false;
+        }
         return $res;
     }
     
@@ -58,8 +65,9 @@ class DB {
 
 class FORMAT extends DB {
     
+    protected $last_err_db;
     
-    protected static function sql_mysqli($con, $table, $limit) {
+    protected function sql_mysqli($con, $table, $limit) {
         
         if (!is_int($limit))
             $limit = 400;
@@ -69,12 +77,24 @@ class FORMAT extends DB {
         /* DB REQUESTS */
         
         $info = $con->query("SHOW TABLE STATUS WHERE NAME LIKE '$table'");
+        
+        if (!$this->err_mysql($info, $con))
+            return false;
+        
         $info = $info->fetch_assoc();
         
         $res = $con->query("SHOW CREATE TABLE `" . $table . "`");
+        
+        if (!$this->err_mysql($res, $con))
+            return false;
+        
         $table_init = $res->fetch_row();
         
         $result = $con->query("SELECT * FROM `" . $table . "`");
+        
+        if (!$this->err_mysql($result, $con))
+            return false;
+        
         $num_fields = $result->field_count;
         $num_rows = $result->num_rows;
         
@@ -128,7 +148,7 @@ class FORMAT extends DB {
         return $return;
     }
     
-    protected static function sql_pdo($con, $table, $limit) {
+    protected function sql_pdo($con, $table, $limit) {
         
         if (!is_int($limit))
             $limit = 400;
@@ -137,15 +157,30 @@ class FORMAT extends DB {
         
         /* DB REQUESTS */
         
-        $info = self::query_pdo($con, "SHOW TABLE STATUS WHERE NAME LIKE '$table'")->fetch(PDO::FETCH_ASSOC);
+        $info = $this->query_pdo($con, "SHOW TABLE STATUS WHERE NAME LIKE '$table'")->fetch(PDO::FETCH_ASSOC);
         
-        $table_init = self::query_pdo($con, "SHOW CREATE TABLE `" . $table . "`")->fetch(PDO::FETCH_NUM);
+        if (!$info)
+            return false;
         
-        $charset = self::query_pdo($con, "SELECT @@character_set_database;")->fetch(PDO::FETCH_NUM);
+        $table_init = $this->query_pdo($con, "SHOW CREATE TABLE `" . $table . "`")->fetch(PDO::FETCH_NUM);
         
-        $db = self::query_pdo($con, "SELECT DATABASE()")->fetchColumn();
+        if (!$table_init)
+            return false;
         
-        $result = self::query_pdo($con, "SELECT * FROM `" . $table . "`");
+        $charset = $this->query_pdo($con, "SELECT @@character_set_database;")->fetch(PDO::FETCH_NUM);
+        
+        if (!$charset)
+            return false;
+        
+        $db = $this->query_pdo($con, "SELECT DATABASE()")->fetchColumn();
+        
+        if (!$db)
+            return false;
+        
+        $result = $this->query_pdo($con, "SELECT * FROM `" . $table . "`");
+        
+        if (!$result)
+            return false;
         
         $num_fields = $result->columnCount();
         $num_rows = $result->rowCount();
@@ -198,13 +233,17 @@ class FORMAT extends DB {
         
     }
     
-    protected static function csv_mysqli($con, $table, $del, $enc, $header_name) {
+    protected function csv_mysqli($con, $table, $del, $enc, $header_name) {
         
         $return = $fields = '';
         
         /* DB REQUESTS */
         
         $result = $con->query("SELECT * FROM `" . $table . "`");
+        
+        if (!$this->err_mysql($result, $con))
+            return false;
+        
         $num_fields = $result->field_count;
         
         
@@ -241,13 +280,17 @@ class FORMAT extends DB {
         return $return;
     }
     
-    protected static function csv_pdo($con, $table, $del, $enc, $header_name) {
+    protected function csv_pdo($con, $table, $del, $enc, $header_name) {
         
         $return = $fields = '';
         
         /* DB REQUESTS */
         
-        $result = self::query_pdo($con, "SELECT * FROM `" . $table . "`");
+        $result = $this->query_pdo($con, "SELECT * FROM `" . $table . "`");
+        
+        if (!$result)
+            return false;
+        
         $num_fields = $result->columnCount();
         
         /* HEADER */
@@ -282,11 +325,14 @@ class FORMAT extends DB {
         return $return;
     }
     
-    protected static function json_mysqli($con, $table, $options) {
+    protected function json_mysqli($con, $table, $options) {
         
         /* DB REQUESTS */
         
         $result = $con->query("SELECT * FROM `" . $table . "`");
+        
+        if (!$this->err_mysql($result, $con))
+            return false;
         
         /* TABLE DATA */
         
@@ -297,11 +343,14 @@ class FORMAT extends DB {
         return json_encode($return);
     }
     
-    protected static function json_pdo($con, $table, $options) {
+    protected function json_pdo($con, $table, $options) {
         
         /* DB REQUESTS */
         
-        $result = self::query_pdo($con, "SELECT * FROM `" . $table . "`");
+        $result = $this->query_pdo($con, "SELECT * FROM `" . $table . "`");
+        
+        if (!$result)
+            return false;
         
         /* TABLE DATA */
         
@@ -310,6 +359,14 @@ class FORMAT extends DB {
         if (is_int($options) && $options != 0)
             return json_encode($return, $options);
         return json_encode($return);
+    }
+    
+    private function err_mysql($res, $con) {
+        if (!$res) {
+            $this->last_err_db = "Error Code(" . $con->errno . "): " . $con->error;
+            return false;
+        }
+        return true;
     }
     
 }
@@ -439,7 +496,7 @@ class FILES extends FORMAT {
 
 class SQL_Backup extends FILES {
     
-    const version = "1.1.2 beta";
+    const version = "1.1.3 beta";
     const site = "https://github.com/Chak10/Backup-SQL-By-Chak10.git";
     
     public $table_name;
@@ -455,7 +512,7 @@ class SQL_Backup extends FILES {
     public $enc_csv;
     public $sql_unique;
     public $json_options;
-    public $res;
+    public $res = false;
     
     
     function __construct($con = null, $table_name = null, $ext = null, $fname = null, $folder = null, $query_limit = null, $archive = null, $phpmyadmin = null, $save = null, $sql_unique = null) {
@@ -482,13 +539,25 @@ class SQL_Backup extends FILES {
         $res_x = true;
         $con = $this->con;
         $tables = $this->check($this->table_name, "tables");
+        
         $time = -microtime(true);
-        if ($this->check($con, "con") == false)
+        
+        if ($this->check($con, "con") == false) {
+            
+            if ($debug === true)
+                return $this->debug();
             return false;
-        if ($this->check($this->folder, "folder") == false)
+        }
+        
+        if ($this->check($this->folder, "folder") == false) {
+            
+            if ($debug === true)
+                return $this->debug();
             return false;
+        }
+        
         if ($tables == false)
-            $tables = $this->table_name = self::query_table($con, $this->type);
+            $tables = $this->table_name = $this->query_table($con, $this->type);
         $this->check($this->ext, "ext");
         $this->check($this->save, "save");
         $this->check($this->fname, "filename");
@@ -498,15 +567,17 @@ class SQL_Backup extends FILES {
         foreach ($this->ext as $type_ext) {
             $type_ext = trim($type_ext);
             if ($this->save == false) {
-                $res[$type_ext] = $this->create($type_ext, $tables);
+                $res_x = false;
+                $create = $this->create($type_ext, $tables);
+                if ($this->last_err_db == null)
+                    $res[$type_ext] = $create;
             } else {
                 if (!$this->save($type_ext, $tables, $this->folder . '/' . $this->fname))
                     $res_x = false;
-                
             }
         }
         $this->exec_time = $time += microtime(true);
-        $this->res = $res;
+        $this->res = empty($res) ? $res_x : $res;
         if ($debug === true)
             return $this->debug();
         $this->clean_var();
@@ -640,7 +711,7 @@ class SQL_Backup extends FILES {
         } while (true);
     }
     
-    protected static function query_table($con, $type) {
+    protected function query_table($con, $type) {
         $tables = array();
         if ($type == "mysqli") {
             $result = $con->query("SHOW TABLES");
@@ -659,9 +730,9 @@ class SQL_Backup extends FILES {
     
     protected function query_sql($table, $limit) {
         if ($this->type == "mysqli")
-            return self::sql_mysqli($this->con, $table, $limit);
+            return $this->sql_mysqli($this->con, $table, $limit);
         if ($this->type == "PDO")
-            return self::sql_pdo($this->con, $table, $limit);
+            return $this->sql_pdo($this->con, $table, $limit);
         return false;
     }
     
@@ -675,17 +746,17 @@ class SQL_Backup extends FILES {
         if ($this->enc_csv != null)
             $enc = $this->enc_csv;
         if ($this->type == "mysqli")
-            return self::csv_mysqli($this->con, $table, $del, $enc, $header_name);
+            return $this->csv_mysqli($this->con, $table, $del, $enc, $header_name);
         if ($this->type == "PDO")
-            return self::csv_pdo($this->con, $table, $del, $enc, $header_name);
+            return $this->csv_pdo($this->con, $table, $del, $enc, $header_name);
         return false;
     }
     
     protected function query_json($table, $options) {
         if ($this->type == "mysqli")
-            return self::json_mysqli($this->con, $table, $options);
+            return $this->json_mysqli($this->con, $table, $options);
         if ($this->type == "PDO")
-            return self::json_pdo($this->con, $table, $options);
+            return $this->json_pdo($this->con, $table, $options);
         return false;
     }
     
