@@ -1,13 +1,11 @@
-# **Backup-SQL-By-Chak10**
-
-# BETA 1.1.3
+# **Backup-SQL-By-Chak10** BETA 1.1.3
 
 **New** BACKUP TABLE OR DATABASE MySQL with PHP.
 
 ``` php
 function __construct($con = null, $table_name = null, $ext = null, $fname = null, $folder = null, $query_limit = null, $archive = null, $phpmyadmin = null, $save = null, $sql_unique = null) {}
  ```
-var _**con**_ (Object) => MySQLi or PDO connection already opened. (N.B. It is recommended that you use the connection to the database inside the class)[READ CON SECTION]()
+var _**con**_ (Object) => MySQLi or PDO connection already opened. (N.B. It is recommended that you use the connection to the database inside the class) [READ CON SECTION](#con)
 
 var _**table_name**_ (String or Array) => The tables that you want to backup. [READ TABLE SECTION]()
 
