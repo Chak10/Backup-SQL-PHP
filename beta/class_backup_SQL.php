@@ -472,8 +472,14 @@ class SQL_Backup extends FILES {
         $this->sql_unique = $sql_unique;
     }
     
+    /*
+     * @var bool $debug Used for debug
+     * @return Bool | Array
+     */
+    
     public function execute($debug = false) {
         $res = array();
+        $res_x = true;
         $con = $this->con;
         $tables = $this->check($this->table_name, "tables");
         $time = -microtime(true);
@@ -495,20 +501,16 @@ class SQL_Backup extends FILES {
                 $res[$type_ext] = $this->create($type_ext, $tables);
             } else {
                 if (!$this->save($type_ext, $tables, $this->folder . '/' . $this->fname))
-                    $res = false;
-                else
-                    $res = true;
+                    $res_x = false;
+                
             }
         }
         $this->exec_time = $time += microtime(true);
-        if ($debug === true) {
-            $this->res = $res;
-            $return = get_object_vars($this);
-            $this->clean_var();
-            return $return;
-        }
+        $this->res = $res;
+        if ($debug === true)
+            return $this->debug();
         $this->clean_var();
-        return $res;
+        return empty($res) ? $res_x : $res;
     }
     
     protected function create($ext, $tables) {
@@ -810,6 +812,12 @@ class SQL_Backup extends FILES {
         unset($this->name_file);
         unset($this->path_file);
         unset($this->exec_time);
+    }
+    
+    private function debug() {
+        $return = get_object_vars($this);
+        $this->clean_var();
+        return $return;
     }
     
 }
