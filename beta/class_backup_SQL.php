@@ -539,10 +539,10 @@ class SQL_Backup extends FILES {
         $this->sql_unique = $sql_unique;
     }
     
-    /*
+    /**
      * @var bool $debug Used for debug
      * @return Bool | Array
-     */
+     **/
     
     public function execute($debug = false) {
         $res = array();
@@ -846,7 +846,7 @@ class SQL_Backup extends FILES {
             case "archive":
                 if ($in === "tar" || $in === "zip" || $in === false)
                     return $this->archive = $in;
-                return $this->archive = false;
+                return $this->archive = "zip";
                 break;
             
             case "save":
