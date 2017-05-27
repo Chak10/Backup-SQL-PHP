@@ -78,10 +78,10 @@ $backup->con($HOST,$USER,$PASSWD,$NAME);
 ### _execute()_
 
 ``` php
-/*
+/**
 * @var $debug Bool (True|False)
 * @return Bool | Array
-*/
+**/
 public function execute($debug = false) {}
 ```
 
