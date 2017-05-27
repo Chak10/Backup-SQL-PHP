@@ -17,7 +17,7 @@ class DB {
      **/
     
     public function con($HOST, $USER, $PASSWD, $NAME, $PORT = null, $SOCK = null) {
-        if (!class_exists("mysqli")) {
+        if (class_exists("mysqli")) {
             $this->type = "mysqli";
             return $this->con_mysqli($HOST, $USER, $PASSWD, $NAME, $PORT, $SOCK);
         } elseif (class_exists("PDO") && in_array('mysql', PDO::getAvailableDrivers())) {
@@ -893,6 +893,7 @@ class SQL_Backup extends FILES {
         unset($this->name_file);
         unset($this->path_file);
         unset($this->exec_time);
+		unset($this->last_err_db);
     }
     
     private function debug() {
