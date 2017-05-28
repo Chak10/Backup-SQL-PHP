@@ -13,7 +13,7 @@ class DB {
      * @var $NAME string The MySQL database name.
      * @var $PORT int The port number to use when connecting to the database server otherwise it uses the default port
      * @var $SOCK string The socket name to use when connecting to a local database server otherwise it uses the default socket.
-     * @result Bool | object
+     * @return Bool | object
      **/
     
     public function con($HOST, $USER, $PASSWD, $NAME, $PORT = null, $SOCK = null) {
@@ -538,7 +538,7 @@ class FILES extends FORMAT {
 
 class SQL_Backup extends FILES {
     
-    const version = "1.1.3 beta";
+    const version = "1.1.4 beta";
     const site = "https://github.com/Chak10/Backup-SQL-By-Chak10.git";
     
     public $table_name;
