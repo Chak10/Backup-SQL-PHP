@@ -570,9 +570,13 @@ class SQL_Backup extends FILES {
      * @var bool $save Output saved in a file or outputed as string.
      * @var bool $sql_unique Output (sql) unified in a unique file/query.
      * @var bool $down Output automatic downloaded.
+     * @var bool $header_name If is set true and the output is csv add the fields name at first row.
+     * @var string $del_csv The optional delimiter parameter sets the field delimiter (one character only) (used in csv output).
+     * @var string $enc_csv The optional enclosure parameter sets the field enclosure (one character only) (used in csv output).
+     * @var int $json_options JSON_ENCODE OPTION.
      **/
     
-    function __construct($con = null, $table_name = null, $ext = null, $fname = null, $folder = null, $query_limit = null, $archive = null, $phpmyadmin = null, $save = null, $sql_unique = null, $down = null) {
+    function __construct($con = null, $table_name = null, $ext = null, $fname = null, $folder = null, $query_limit = null, $archive = null, $phpmyadmin = null, $save = null, $sql_unique = null, $down = null, $header_name = null, $del_csv = null, $enc_csv = null, $json_options = null) {
         parent::__construct();
         $this->con = $con;
         $this->table_name = $table_name;
@@ -585,6 +589,10 @@ class SQL_Backup extends FILES {
         $this->save = $save;
         $this->down = $down;
         $this->sql_unique = $sql_unique;
+        $this->header_name = $header_name;
+        $this->del_csv = $del_csv;
+        $this->enc_csv = $enc_csv;
+        $this->json_options = $json_options;
     }
     
     /**
