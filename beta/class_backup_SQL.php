@@ -502,6 +502,38 @@ class FILES extends FORMAT {
         return true;
     }
     
+    public static function DownloadFile($file, $del = false, $filename = '') {
+        $mime = "application/octet-stream";
+        $name = basename($file);
+        if (!file_exists($file))
+            return false;
+        if (is_string($filename) && $filename != '')
+            $name = $filename;
+        if (class_exists('finfo')) {
+            $finfo = new finfo(FILEINFO_MIME);
+            $mime = $finfo->file($file);
+        } elseif (function_exists('mime_content_type')) {
+            $mime = mime_content_type($file);
+        }
+        ob_start();
+        header("Expires: 0");
+        header("Pragma: public");
+        header("Connection: Keep-Alive");
+        header("Cache-Control: public");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Content-Description: File Transfer");
+        header("Content-Type: $mime");
+        header("Content-Disposition: attachment; filename=\"" . $name . "\"");
+        header("Content-Transfer-Encoding: Binary");
+        header("Content-Length: " . filesize($file));
+        ob_end_flush();
+        readfile($file);
+        if ($del === true)
+            unlink($file);
+        exit();
+        
+    }
+    
 }
 
 class SQL_Backup extends FILES {
@@ -525,6 +557,20 @@ class SQL_Backup extends FILES {
     public $res = false;
     
     
+    /**
+     * @var object $con Database connection already opened
+     * @var string | array $table_name Database tables
+     * @var string | array $ext File estensions output
+     * @var string $fname Filename output
+     * @var string $folder Folder output
+     * @var int $query_limit Query interval insert
+     * @var bool | string $archive Output compressed (zip) or archived (tar) or in a dir (false)
+     * @var bool $phpmyadmin ...
+     * @var bool $save Output saved in a file or outputed as string
+     * @var bool $sql_unique Output (sql) unified in a unique file/query
+     * @var bool $download Output automatic downloaded (SOON)
+     **/
+    
     function __construct($con = null, $table_name = null, $ext = null, $fname = null, $folder = null, $query_limit = null, $archive = null, $phpmyadmin = null, $save = null, $sql_unique = null) {
         parent::__construct();
         $this->con = $con;
@@ -547,33 +593,12 @@ class SQL_Backup extends FILES {
     public function execute($debug = false) {
         $res = array();
         $res_x = true;
-        $con = $this->con;
+        $this->checking();
+        if ($this->check($this->con, "con") == false)
+            return $debug === true ? $this->debug() : false;
+        if ($this->check($this->folder, "folder") == false)
+            return $debug === true ? $this->debug() : false;
         $tables = $this->check($this->table_name, "tables");
-        
-        $time = -microtime(true);
-        
-        if ($this->check($con, "con") == false) {
-            
-            if ($debug === true)
-                return $this->debug();
-            return false;
-        }
-        
-        if ($this->check($this->folder, "folder") == false) {
-            
-            if ($debug === true)
-                return $this->debug();
-            return false;
-        }
-        
-        if ($tables == false)
-            $tables = $this->table_name = $this->query_table($con, $this->type);
-        $this->check($this->ext, "ext");
-        $this->check($this->save, "save");
-        $this->check($this->fname, "filename");
-        $this->check($this->archive, "archive");
-        $this->check($this->phpmyadmin, "one_file");
-        $this->check($this->sql_unique, "unique_sql");
         foreach ($this->ext as $type_ext) {
             $type_ext = trim($type_ext);
             if ($this->save == false) {
@@ -586,12 +611,43 @@ class SQL_Backup extends FILES {
                     $res_x = false;
             }
         }
-        $this->exec_time = $time += microtime(true);
-        $this->res = empty($res) ? $res_x : $res;
+        $this->res = $res = empty($res) ? $res_x : $res;
         if ($debug === true)
             return $this->debug();
         $this->clean_var();
-        return empty($res) ? $res_x : $res;
+        return $res;
+    }
+    
+    public function execute_down() {
+        $this->checking();
+        if ($this->check($this->con, "con") == false)
+            return false;
+        if ($this->check($this->folder, "folder") == false)
+            return false;
+        $tables = $this->check($this->table_name, "tables");
+        $name_temp = "temp_backup" . md5(microtime(true) . mt_rand());
+        foreach ($this->ext as $type_ext) {
+            $type_ext = trim($type_ext);
+            $create = $this->create($type_ext, $tables);
+            if ($this->last_err_db == null) {
+                $n = 1;
+                foreach ($create as $table => $tb) {
+                    $this->_save($tb, "TB" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "]." . $type_ext, $name_temp, $type_ext, 'zip');
+                    ++$n;
+                }
+            }
+        }
+        $this->clean_var();
+        return $this->DownloadFile($name_temp . '.zip', true, "Backup_MYSQL(" . date("Y-m-d-H-i-s") . ").zip");
+    }
+    
+    private function checking() {
+        $this->check($this->ext, "ext");
+        $this->check($this->save, "save");
+        $this->check($this->fname, "filename");
+        $this->check($this->archive, "archive");
+        $this->check($this->phpmyadmin, "one_file");
+        $this->check($this->sql_unique, "unique_sql");
     }
     
     protected function create($ext, $tables) {
@@ -797,7 +853,7 @@ class SQL_Backup extends FILES {
                     return true;
                 if (is_string($in) && $in != "*" && $in != "")
                     return $this->table_name = explode(",", $in);
-                return false;
+                return $this->table_name = $this->query_table($this->con, $this->type);
                 break;
             
             case "filename":
@@ -892,8 +948,7 @@ class SQL_Backup extends FILES {
         unset($this->err_c);
         unset($this->name_file);
         unset($this->path_file);
-        unset($this->exec_time);
-		unset($this->last_err_db);
+        unset($this->last_err_db);
     }
     
     private function debug() {
