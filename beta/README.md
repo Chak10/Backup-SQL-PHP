@@ -1,4 +1,4 @@
-# **Backup-SQL-By-Chak10** (BETA V1.1.3)
+# **Backup-SQL-By-Chak10** (BETA V1.1.4)
 
 **New** BACKUP TABLE OR DATABASE MySQL with PHP.
 
@@ -311,6 +311,7 @@ $backup->json_option = JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES;
 - Del= [,]
 - Enc= []
 - Json_option = null
+- Down = null
 
 > **Note: Attention this class has not been tested in all possible situations. So if you have problems you disclose them to me.**.
 
