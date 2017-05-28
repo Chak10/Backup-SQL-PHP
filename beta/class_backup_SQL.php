@@ -13,7 +13,7 @@ class DB {
      * @var $NAME string The MySQL database name.
      * @var $PORT int The port number to use when connecting to the database server otherwise it uses the default port
      * @var $SOCK string The socket name to use when connecting to a local database server otherwise it uses the default socket.
-     * @result Bool | object
+     * @return Bool | object
      **/
     
     public function con($HOST, $USER, $PASSWD, $NAME, $PORT = null, $SOCK = null) {
