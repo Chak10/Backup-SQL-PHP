@@ -13,7 +13,7 @@ class DB {
      * @var $NAME string The MySQL database name.
      * @var $PORT int The port number to use when connecting to the database server otherwise it uses the default port
      * @var $SOCK string The socket name to use when connecting to a local database server otherwise it uses the default socket.
-     * @return Bool | object
+     * @result Bool | object
      **/
     
     public function con($HOST, $USER, $PASSWD, $NAME, $PORT = null, $SOCK = null) {
@@ -538,7 +538,7 @@ class FILES extends FORMAT {
 
 class SQL_Backup extends FILES {
     
-    const version = "1.1.4 beta";
+    const version = "1.1.3 beta";
     const site = "https://github.com/Chak10/Backup-SQL-By-Chak10.git";
     
     public $table_name;
@@ -559,17 +559,17 @@ class SQL_Backup extends FILES {
     
     
     /**
-     * @var object $con Database connection already opened
-     * @var string | array $table_name Database tables
-     * @var string | array $ext File estensions output
-     * @var string $fname Filename output
-     * @var string $folder Folder output
-     * @var int $query_limit Query interval insert
-     * @var bool | string $archive Output compressed (zip) or archived (tar) or in a dir (false)
-     * @var bool $phpmyadmin ...
-     * @var bool $save Output saved in a file or outputed as string
-     * @var bool $sql_unique Output (sql) unified in a unique file/query
-     * @var bool $down Output automatic downloaded
+     * @var object $con Database connection already opened.
+     * @var string | array $table_name Database tables.
+     * @var string | array $ext File estensions output.
+     * @var string $fname Filename output.
+     * @var string $folder Folder output.
+     * @var int $query_limit Query interval insert.
+     * @var bool | string $archive Output compressed (zip) or archived (tar) or in a dir (false).
+     * @var bool $phpmyadmin It creates files that can be imported directly with phpmyadmin.
+     * @var bool $save Output saved in a file or outputed as string.
+     * @var bool $sql_unique Output (sql) unified in a unique file/query.
+     * @var bool $down Output automatic downloaded.
      **/
     
     function __construct($con = null, $table_name = null, $ext = null, $fname = null, $folder = null, $query_limit = null, $archive = null, $phpmyadmin = null, $save = null, $sql_unique = null, $down = null) {
