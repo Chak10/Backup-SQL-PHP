@@ -256,6 +256,10 @@ class FORMAT extends DB {
         
         $num_fields = $result->field_count;
         
+        if (!is_string($del) || strlen($del) != 1)
+            $del = ",";
+        if (!is_string($enc) || strlen($enc) != 1)
+            $enc = "";
         
         /* HEADER */
         
@@ -654,22 +658,13 @@ class SQL_Backup extends FILES {
         foreach ($tables as $table) {
             switch ($ext) {
                 case "sql":
-                    $option = 400;
-                    if (is_int($this->qlimit))
-                        $option = $this->qlimit;
-                    $res[$table] = $this->query_sql($table, $option);
+                    $res[$table] = $this->query_sql($table, $this->qlimit);
                     break;
                 case "csv":
-                    $option = true;
-                    if ($this->header_name === true || $this->header_name === false)
-                        $option = $this->header_name;
-                    $res[$table] = $this->query_csv($table, $option);
+                    $res[$table] = $this->query_csv($table, $this->header_name);
                     break;
                 case "json":
-                    $option = 0;
-                    if (is_int($this->json_options))
-                        $option = $this->json_options;
-                    $res[$table] = $this->query_json($table, $option);
+                    $res[$table] = $this->query_json($table, $this->json_options);
                     break;
             }
         }
@@ -684,13 +679,10 @@ class SQL_Backup extends FILES {
         foreach ($tables as $table) {
             switch ($ext) {
                 case "sql":
-                    $option = 400;
-                    if (is_int($this->qlimit))
-                        $option = $this->qlimit;
                     if ($this->sql_unique == true) {
-                        $tb .= $this->query_sql($table, $option);
+                        $tb .= $this->query_sql($table, $this->qlimit);
                     } else {
-                        $tb = $this->query_sql($table, $option);
+                        $tb = $this->query_sql($table, $this->qlimit);
                         $this->name_file[] = $name = "TB" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].sql";
                         if ($this->phpmyadmin == false) {
                             if ($this->_save($tb, $name, $filename, 'sql', $comp) == false)
@@ -699,14 +691,10 @@ class SQL_Backup extends FILES {
                             if ($this->_save($tb, $name, $filename . '-' . $table . '-' . hash('crc32b', microtime(true) . mt_rand()) . ".sql", '', "zip") == false)
                                 ++$e;
                         }
-                        
                     }
                     break;
                 case "csv":
-                    $option = true;
-                    if ($this->header_name === true || $this->header_name === false)
-                        $option = $this->header_name;
-                    $tb = $this->query_csv($table, $option);
+                    $tb = $this->query_csv($table, $this->header_name);
                     $this->name_file[] = $name = "TB" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].csv";
                     if ($this->phpmyadmin == false) {
                         if ($this->_save($tb, $name, $filename, 'csv', $comp) == false)
@@ -717,11 +705,8 @@ class SQL_Backup extends FILES {
                     }
                     break;
                 case "json":
-                    $option = 0;
-                    if (is_int($this->json_options))
-                        $option = $this->json_options;
                     if ($this->phpmyadmin == false) {
-                        $tb = $this->query_json($table, $option);
+                        $tb = $this->query_json($table, $this->json_options);
                         $this->name_file[] = $name = "TB" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "].json";
                         if ($this->_save($tb, $name, $filename, 'json', $comp) == false)
                             ++$e;
@@ -802,18 +787,10 @@ class SQL_Backup extends FILES {
     }
     
     protected function query_csv($table, $header_name) {
-        $del = ',';
-        $enc = '';
-        if ($header_name !== true && $header_name !== false)
-            $header_name = true;
-        if ($this->del_csv != null)
-            $del = $this->del_csv;
-        if ($this->enc_csv != null)
-            $enc = $this->enc_csv;
         if ($this->type == "mysqli")
-            return $this->csv_mysqli($this->con, $table, $del, $enc, $header_name);
+            return $this->csv_mysqli($this->con, $table, $this->del_csv, $this->enc_csv, $header_name);
         if ($this->type == "PDO")
-            return $this->csv_pdo($this->con, $table, $del, $enc, $header_name);
+            return $this->csv_pdo($this->con, $table, $this->del_csv, $this->enc_csv, $header_name);
         return false;
     }
     
