@@ -553,6 +553,7 @@ class SQL_Backup extends FILES {
     public $del_csv;
     public $enc_csv;
     public $sql_unique;
+    public $down;
     public $json_options;
     public $res = false;
     
@@ -568,10 +569,10 @@ class SQL_Backup extends FILES {
      * @var bool $phpmyadmin ...
      * @var bool $save Output saved in a file or outputed as string
      * @var bool $sql_unique Output (sql) unified in a unique file/query
-     * @var bool $download Output automatic downloaded (SOON)
+     * @var bool $down Output automatic downloaded
      **/
     
-    function __construct($con = null, $table_name = null, $ext = null, $fname = null, $folder = null, $query_limit = null, $archive = null, $phpmyadmin = null, $save = null, $sql_unique = null) {
+    function __construct($con = null, $table_name = null, $ext = null, $fname = null, $folder = null, $query_limit = null, $archive = null, $phpmyadmin = null, $save = null, $sql_unique = null, $down = null) {
         parent::__construct();
         $this->con = $con;
         $this->table_name = $table_name;
@@ -582,6 +583,7 @@ class SQL_Backup extends FILES {
         $this->ext = $ext;
         $this->phpmyadmin = $phpmyadmin;
         $this->save = $save;
+        $this->down = $down;
         $this->sql_unique = $sql_unique;
     }
     
@@ -599,46 +601,35 @@ class SQL_Backup extends FILES {
         if ($this->check($this->folder, "folder") == false)
             return $debug === true ? $this->debug() : false;
         $tables = $this->check($this->table_name, "tables");
+        $name_temp = "temp_backup" . md5(microtime(true) . mt_rand());
         foreach ($this->ext as $type_ext) {
             $type_ext = trim($type_ext);
-            if ($this->save == false) {
+            if ($this->save == false || $this->down == true) {
                 $res_x = false;
                 $create = $this->create($type_ext, $tables);
-                if ($this->last_err_db == null)
-                    $res[$type_ext] = $create;
+                if ($this->last_err_db == null) {
+                    if ($this->save == false)
+                        $res[$type_ext] = $create;
+                    if ($this->down == true) {
+                        $n = 1;
+                        foreach ($create as $table => $tb) {
+                            $this->_save($tb, "TB" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "]." . $type_ext, $name_temp, $type_ext, 'zip');
+                            ++$n;
+                        }
+                    }
+                }
             } else {
                 if (!$this->save($type_ext, $tables, $this->folder . '/' . $this->fname))
                     $res_x = false;
             }
         }
         $this->res = $res = empty($res) ? $res_x : $res;
+        if ($this->down == true)
+            return $this->DownloadFile($name_temp . '.zip', true, "Backup_MYSQL(" . date("Y-m-d-H-i-s") . ").zip");
         if ($debug === true)
             return $this->debug();
         $this->clean_var();
         return $res;
-    }
-    
-    public function execute_down() {
-        $this->checking();
-        if ($this->check($this->con, "con") == false)
-            return false;
-        if ($this->check($this->folder, "folder") == false)
-            return false;
-        $tables = $this->check($this->table_name, "tables");
-        $name_temp = "temp_backup" . md5(microtime(true) . mt_rand());
-        foreach ($this->ext as $type_ext) {
-            $type_ext = trim($type_ext);
-            $create = $this->create($type_ext, $tables);
-            if ($this->last_err_db == null) {
-                $n = 1;
-                foreach ($create as $table => $tb) {
-                    $this->_save($tb, "TB" . $n . "_Name[" . $table . "]_Date[" . date("d-m-Y-H-i-s") . "]_Crc32b[" . hash("crc32b", $tb) . "]." . $type_ext, $name_temp, $type_ext, 'zip');
-                    ++$n;
-                }
-            }
-        }
-        $this->clean_var();
-        return $this->DownloadFile($name_temp . '.zip', true, "Backup_MYSQL(" . date("Y-m-d-H-i-s") . ").zip");
     }
     
     private function checking() {
@@ -949,6 +940,7 @@ class SQL_Backup extends FILES {
         unset($this->name_file);
         unset($this->path_file);
         unset($this->last_err_db);
+        unset($this->down);
     }
     
     private function debug() {
