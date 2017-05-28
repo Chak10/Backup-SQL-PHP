@@ -538,7 +538,7 @@ class FILES extends FORMAT {
 
 class SQL_Backup extends FILES {
     
-    const version = "1.1.3 beta";
+    const version = "1.1.4 beta";
     const site = "https://github.com/Chak10/Backup-SQL-By-Chak10.git";
     
     public $table_name;
