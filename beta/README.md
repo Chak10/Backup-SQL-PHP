@@ -3,7 +3,7 @@
 **New** BACKUP TABLE OR DATABASE MySQL with PHP.
 
 ``` php
-function __construct($con = null, $table_name = null, $ext = null, $fname = null, $folder = null, $query_limit = null, $archive = null, $phpmyadmin = null, $save = null, $sql_unique = null) {}
+ function __construct($con = null, $table_name = null, $ext = null, $fname = null, $folder = null, $query_limit = null, $archive = null, $phpmyadmin = null, $save = null, $sql_unique = null, $down = null, $header_name = null, $del_csv = null, $enc_csv = null, $json_options = null) {}
  ```
 var _**con**_ (Object) => MySQLi or PDO connection already opened. (N.B. It is recommended that you use the connection to the database inside the class) [READ CON SECTION](#con)
 
