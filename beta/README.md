@@ -19,11 +19,13 @@ var _**query_limit**_ (Int) => Number of queries at a time to execute in SQL [RE
 
 var _**archive**_ (Bool) => It results as an archive. (.zip|.tar)
 
-var _**phpadmin**_ (Bool) => If set to true as a result a file that can be imported with phpadmin (sql|csv)
+var _**phpadmin**_ (Bool) => If set to true, it creates files that can be imported directly with phpmyadmin. (sql|csv)
 
 var _**save**_ (Bool) => If set to false, the result will not be saved but will be loaded on the variable of class sql, csv, json (Based on request) [READ SAVE SECTION](#save)
 
 var _**sql_unique**_ (Bool) => If set to true the SQL dump is a single file with all the tables. (Valid only for the SQL format)
+
+var _**down**_ (Bool) => If set to true, the output is automatic downloaded. (zip)
 
 [**Execution Times**](https://github.com/Chak10/Backup_SQL-PHP-ByChak10/blob/master/beta/bench.md)
 
