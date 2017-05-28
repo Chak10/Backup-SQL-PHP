@@ -307,6 +307,11 @@ class FORMAT extends DB {
         
         $num_fields = $result->columnCount();
         
+		if (!is_string($del) || strlen($del) != 1)
+            $del = ",";
+        if (!is_string($enc) || strlen($enc) != 1)
+            $enc = "";		
+		
         /* HEADER */
         
         if ($header_name === true) {
