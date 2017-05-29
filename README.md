@@ -27,7 +27,7 @@ var _**sql_unique**_ (Bool) => If set to true the SQL dump is a single file with
 
 var _**down**_ (Bool) => If set to true, the output is automatic downloaded. (zip)
 
-[**Execution Times**](https://github.com/Chak10/Backup_SQL-PHP-ByChak10/blob/master/beta/bench.md)
+[**Execution Times**](https://github.com/Chak10/Backup_SQL-PHP-ByChak10/blob/master/bench.md)
 
 ## USE
 
