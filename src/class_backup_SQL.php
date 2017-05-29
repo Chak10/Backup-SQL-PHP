@@ -831,7 +831,7 @@ class SQL_Backup extends FILES {
             
             case "tables":
                 if (is_array($in))
-                    return true;
+                    return $this->table_name = $in;
                 if (is_string($in) && $in != "*" && $in != "")
                     return $this->table_name = explode(",", $in);
                 return $this->table_name = $this->query_table($this->con, $this->type);
